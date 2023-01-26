@@ -5,7 +5,6 @@ public
 index.html
 docs
 # dist
-src
 preview
 
 # local env files
@@ -26,3 +25,7 @@ pnpm-debug.log*
 *.njsproj
 *.sln
 *.sw?
+
+rollup.config.js
+babel.config.cjs
+vite.config.ts

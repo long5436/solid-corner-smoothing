@@ -265,7 +265,7 @@ const SolidCornerSmoothing: Component<Props> = (props) => {
     <Dynamic
       component={props.wrapper || componentDefault}
       class={props.class}
-      classList={{ [randomClassname]: !props.cornerClass }}
+      classList={{ [randomClassname]: !props.cornerClass, ...props.classList }}
       ref={componentRef}
     >
       {props.children || <></>}

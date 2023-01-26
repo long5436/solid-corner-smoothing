@@ -4,6 +4,9 @@ import { FigmaSquircleParams } from 'figma-squircle';
 export interface Props {
   children?: JSXElement;
   class?: string;
+  classList?: {
+    [key: string]: boolean;
+  };
   wrapper?: Component | string;
   cornerRadius?: number;
   cornerSmoothing?: number;

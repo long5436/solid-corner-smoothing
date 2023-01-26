@@ -11,3 +11,7 @@
 .box::after{
   background-color: #ddd;
 }
+
+.test {
+  background-color: green;
+}

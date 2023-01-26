@@ -1,18 +1,20 @@
 import { Component, createSignal } from 'solid-js';
 import SolidCornerSmoothing from '../dist';
+// import SolidCornerSmoothing from './package';
 import './app.css';
 
 const App: Component = () => {
-  const [radius, setRadius] = createSignal(60);
-  const [smoothing, setSmoothing] = createSignal(0.7);
+  const [enable, setEnable] = createSignal<boolean>(true);
 
   return (
     <div>
+      <button onClick={(e) => setEnable(!enable())}>Test</button>
       <SolidCornerSmoothing
         class="box"
+        classList={{ test: enable() }}
         cornerRadius={30}
         cornerSmoothing={0.8}
-        wrapper='button'
+        wrapper="button"
         borderWidth={2}
         preserveSmoothing
         fixRenderChromium
