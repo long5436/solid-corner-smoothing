@@ -70,11 +70,14 @@ return (
 
 ### Wrapper
 
+pass the tag name as a string to the `wrapper` prop that will be used as the root tag
+
 ```jsx
 return (
   <div>
     <SolidCornerSmoothing 
-        class="box" wrapper="form" 
+        class="box" 
+        wrapper="form" 
         cornerRadius={60} 
         cornerSmoothing={0.7}
     >
@@ -85,6 +88,8 @@ return (
 ```
 
 ### Solid-styled-components
+
+You can also pass a style-components to the wrapper prop to generate the root tag
 
 ```jsx
 const Btn = styled('button')`
@@ -118,6 +123,7 @@ return (
 
 
 ### Use css with border
+You can also use css if you don't use color props, if you don't have border then no css for ::after
 
 ```jsx
 return (
@@ -126,8 +132,6 @@ return (
       cornerRadius={30}
       cornerSmoothing={0.8}
       wrapper="button"
-      backgroundColor="#ddd"
-      borderColor="tomato"
       borderWidth={2}
       preserveSmoothing
       fixRenderChromium
@@ -149,7 +153,7 @@ return (
   background-color: tomato;
 }
 
-.box::after{
+.box::after {
   background-color: #ddd;
 }
 
