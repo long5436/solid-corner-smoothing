@@ -1,7 +1,7 @@
 {
   "name": "solid-corner-smoothing",
   "version": "0.1.0",
-  "description": "",
+  "description": "Component package to create smooth corners for Solid",
   "author": "Nguyen Van Long",
   "scripts": {
     "start": "vite",
