@@ -17,6 +17,14 @@
   "files": [
     "dist"
   ],
+  "keywords": [
+    "smooth",
+    "corner",
+    "border",
+    "radius",
+    "solid-corner",
+    "solid-smooth"
+  ],
   "homepage": "https://github.com/nguyenvanlongweb/solid-corner-smoothing#readme",
   "repository": {
     "type": "git",
@@ -45,6 +53,5 @@
     "vite-plugin-dts": "^1.7.1",
     "vite-plugin-solid": "^2.5.0"
   },
-  "dependencies": {
-  }
+  "dependencies": {}
 }

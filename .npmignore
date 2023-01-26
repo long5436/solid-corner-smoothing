@@ -4,8 +4,9 @@ src
 public
 index.html
 docs
-dist
-
+# dist
+src
+preview
 
 # local env files
 .env.local
@@ -19,7 +20,7 @@ pnpm-debug.log*
 
 # Editor directories and files
 .idea
-# .vscode
+.vscode
 *.suo
 *.ntvs*
 *.njsproj
