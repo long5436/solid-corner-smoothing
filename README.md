@@ -35,7 +35,7 @@ const App = () => {
         preserveSmoothing
         debounce={100}
       >
-        box
+        This is box
       </SolidCornerSmoothing>
     </div>
   );
@@ -131,6 +131,7 @@ You can also use css if you don't use color props, if you don't have border then
 return (
   <div>
     <SolidCornerSmoothing
+      class="box"
       cornerRadius={30}
       cornerSmoothing={0.8}
       wrapper="button"
