@@ -48,6 +48,8 @@ export default App;
 
 ### Using with reactivity
 
+you can use react and have to enable 'reSize' prop to be able to change element state according to it
+
 ```jsx
 const [radius, setRadius] = createSignal(60);
 const [smoothing, setSmoothing] = createSignal(0.7);
