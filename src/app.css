@@ -8,10 +8,10 @@
   background-color: tomato;
 }
 
-.box::after{
+.box::after {
   background-color: #ddd;
 }
 
 .test {
-  background-color: green;
+  background-color: rgba(255, 99, 71, 0.815);
 }

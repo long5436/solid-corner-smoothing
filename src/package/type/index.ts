@@ -32,4 +32,12 @@ export type Size = {
   height: number;
 };
 
+export interface OptionsCreateSVG {
+  width: number;
+  height: number;
+  fill?: string;
+  path?: string;
+  classname: string;
+}
+
 export type { Component, JSXElement, FigmaSquircleParams };

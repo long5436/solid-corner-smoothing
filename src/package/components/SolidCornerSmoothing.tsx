@@ -1,12 +1,13 @@
 /* eslint-disable prefer-const */
 import { createEffect, on, createSignal, onMount, onCleanup } from 'solid-js';
-import { Dynamic } from 'solid-js/web';
+import { Dynamic, Portal } from 'solid-js/web';
 import { getSvgPath } from 'figma-squircle';
-import { createUUID } from '../utils';
+import { createUUID, createSvg, createSvgPath } from '../utils';
 import type { Component, Props, Options, Size, FigmaSquircleParams } from '../type';
 
 const SolidCornerSmoothing: Component<Props> = (props) => {
   const [propRefs, setPropRefs] = createSignal<Props>({});
+  const [svg, setSvg] = createSignal<SVGSVGElement>();
   const componentDefault = 'div';
   const randomId: string = 'id' + createUUID();
   const randomClassname: string = 'corner' + createUUID();
@@ -69,60 +70,56 @@ const SolidCornerSmoothing: Component<Props> = (props) => {
       }
 
       if (props.borderWidth) {
+        const svg: SVGSVGElement = createSvg({
+          ...getSize(),
+          path: pathSvg,
+          classname: randomId,
+          // fill: getComputedStyle(componentRef).backgroundColor,
+          fill: 'tomato',
+        });
+
+        const svg2: SVGPathElement = createSvgPath(pathIncludeBorderSvg);
+
+        svg2.setAttribute('transform', `translate(${props.borderWidth},${props.borderWidth})`);
+        svg.appendChild(svg2);
+
+        setSvg(svg);
+
         styleTag.innerHTML = `
-        .${props.cornerClass ? props.cornerClass : randomClassname} {
+        .${props.cornerClass || randomClassname} {
           position: relative;
-          z-index: 1;
-          ${props.borderColor ? `background-color: ${props.borderColor}` : ''};
-          ${
-            props.fixRenderChromium
-              ? `
-            transform: skewY(0.001deg);
-            -moz-transform: skewY(0.001deg);
-            -webkit-transform: skewY(0.001deg);
-            -o-transform: skewY(0.001deg);
-            `
-              : ''
-          }
-          clip-path: path('${pathSvg}');
-          -moz-clip-path: path('${pathSvg}');
-          -webkit-clip-path: path('${pathSvg}');
-          -o-clip-path: path('${pathSvg}');
+          background-color: transparent;
         }
-  
-        .${props.cornerClass ? props.cornerClass : randomClassname}::after {
-          content: '';
+
+        .${randomId} {
           position: absolute;
-          z-index: -1;
-          inset: ${props.borderWidth}px;
-          ${props.backgroundColor ? `background-color: ${props.backgroundColor}` : ''};
-          clip-path: path('${pathIncludeBorderSvg}');
-          -moz-clip-path: path('${pathIncludeBorderSvg}');
-          -webkit-clip-path: path('${pathIncludeBorderSvg}');
-          -o-clip-path: path('${pathIncludeBorderSvg}');
+          inset: 0;
+          z-index: -1; 
         }
-        `;
+      `;
       } else {
+        const svg: SVGSVGElement = createSvg({
+          // height: 100,
+          // width: 200,
+          ...getSize(),
+          path: pathSvg,
+          classname: randomId,
+          // fill: getComputedStyle(componentRef).backgroundColor,
+          fill: 'tomato',
+        });
+        setSvg(svg);
+
         styleTag.innerHTML = `
-      .${props.cornerClass ? props.cornerClass : randomClassname} {
-        position: relative;
-        z-index: 1;
-        ${props.backgroundColor ? `background-color: ${props.backgroundColor}` : ''};
-        ${
-          props.fixRenderChromium
-            ? `
-          transform: skewY(0.001deg);
-          -moz-transform: skewY(0.001deg);
-          -webkit-transform: skewY(0.001deg);
-          -o-transform: skewY(0.001deg);
-          `
-            : ''
+        .${props.cornerClass || randomClassname} {
+          position: relative;
+          background-color: transparent;
         }
-        clip-path: path('${pathSvg}');
-        -moz-clip-path: path('${pathSvg}');
-        -webkit-clip-path: path('${pathSvg}');
-        -o-clip-path: path('${pathSvg}');
-      }
+
+        .${randomId} {
+          position: absolute;
+          inset: 0;
+          z-index: -1;
+        }
       `;
       }
 
@@ -157,7 +154,7 @@ const SolidCornerSmoothing: Component<Props> = (props) => {
     const fitBorderWidth: number = props.fitBorderWidth || 0;
 
     const editProps: { cornerRadius: number } = {
-      cornerRadius: cornerRadius - borderWidth + borderWidth / 3 + fitBorderWidth,
+      cornerRadius: cornerRadius - borderWidth + borderWidth / 5 + fitBorderWidth,
     };
 
     return { ...getSizeIncludeBorder(), ...propRefs(), ...editProps } as Options;
@@ -269,6 +266,7 @@ const SolidCornerSmoothing: Component<Props> = (props) => {
       ref={componentRef}
     >
       {props.children || <></>}
+      {svg()}
     </Dynamic>
   );
 };
