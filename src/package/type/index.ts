@@ -23,6 +23,16 @@ export interface Props {
   debounce?: number;
   fitBorderWidth?: number;
   fixRenderChromium?: boolean;
+  style?: StyleProp;
+}
+
+export interface OptionsCreateSVG {
+  width: number;
+  height: number;
+  fill?: string;
+  path?: string;
+  classname: string;
+  attr?: string;
 }
 
 export type Options = FigmaSquircleParams;
@@ -32,12 +42,12 @@ export type Size = {
   height: number;
 };
 
-export interface OptionsCreateSVG {
-  width: number;
-  height: number;
-  fill?: string;
-  path?: string;
-  classname: string;
-}
+export type StyleProp = { [key: string]: string | number };
+export type Color = { backgroundColor: string; borderColor: string };
+
+export type CssStyle = {
+  css: { value: string };
+  color: Color;
+};
 
 export type { Component, JSXElement, FigmaSquircleParams };

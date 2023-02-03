@@ -2,6 +2,8 @@ import babel from '@rollup/plugin-babel';
 import nodeResolve from '@rollup/plugin-node-resolve';
 import dts from 'rollup-plugin-dts';
 import terser from '@rollup/plugin-terser';
+import size from 'rollup-plugin-sizes';
+import bundleSize from 'rollup-plugin-bundle-size';
 
 export default [
   {
@@ -26,6 +28,8 @@ export default [
         minified: true,
       }),
       terser(),
+      size(),
+      bundleSize(),
     ],
   },
   {

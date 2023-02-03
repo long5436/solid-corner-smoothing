@@ -1,9 +1,24 @@
 /* eslint-disable prefer-const */
 import { createEffect, on, createSignal, onMount, onCleanup } from 'solid-js';
-import { Dynamic, Portal } from 'solid-js/web';
-import { getSvgPath } from 'figma-squircle';
-import { createUUID, createSvg, createSvgPath } from '../utils';
-import type { Component, Props, Options, Size, FigmaSquircleParams } from '../type';
+import { Dynamic } from 'solid-js/web';
+import {
+  createUUID,
+  createSvg,
+  createSvgPath,
+  createOnlyPath,
+  getSize,
+  createCssFromPropStyle,
+  getPositionProperty,
+} from '../utils';
+import type {
+  Component,
+  Props,
+  Options,
+  FigmaSquircleParams,
+  CssStyle,
+  StyleProp,
+  Size,
+} from '../type';
 
 const SolidCornerSmoothing: Component<Props> = (props) => {
   const [propRefs, setPropRefs] = createSignal<Props>({});
@@ -19,49 +34,15 @@ const SolidCornerSmoothing: Component<Props> = (props) => {
   // eslint-disable-next-line @typescript-eslint/ban-ts-comment
   let componentRef: HTMLElement | null = null;
   let resizeObserver: ResizeObserver | null = null;
+  // let mutationObserver: MutationObserver | null = null;
   let timeoutDebounce: ReturnType<typeof setTimeout> | null = null;
-
-  const getSize = (): Size => {
-    if (componentRef) {
-      const s: HTMLElement = componentRef;
-      const { width, height }: Size = {
-        width: s.clientWidth,
-        height: s.clientHeight,
-      };
-      return { width, height };
-    }
-    return { width: 0, height: 0 };
-  };
-
-  const getSizeIncludeBorder = (): Size => {
-    if (componentRef) {
-      const s: HTMLElement = componentRef;
-      const { width, height }: Size = {
-        width: s.clientWidth,
-        height: s.clientHeight,
-      };
-
-      const borderWidth: number = props.borderWidth || 0;
-
-      return {
-        width: width - borderWidth * 2 || 0,
-        height: height - borderWidth * 2 || 0,
-      };
-    }
-    return { width: 0, height: 0 };
-  };
-
-  const createOnlyPath = (options: FigmaSquircleParams) => {
-    const path: string = getSvgPath(options);
-    // console.log("rerender");
-
-    return path;
-  };
 
   const setCorner = (pathSvg: string, pathIncludeBorderSvg: string): void => {
     if (componentRef) {
       let styleTag: HTMLElement | null = document.getElementById(randomId);
       const check = !!styleTag;
+      const resultCssStyle: CssStyle = createCssFromPropStyle(props.style as StyleProp);
+      const size: Size = getSize(componentRef);
 
       if (!styleTag) {
         styleTag = document.createElement('style');
@@ -69,26 +50,35 @@ const SolidCornerSmoothing: Component<Props> = (props) => {
         styleTag.id = randomId;
       }
 
+      // set corner (css, fill)
+      // remove class to get background color
+      componentRef.classList.remove(props.cornerClass || randomClassname);
+
       if (props.borderWidth) {
         const svg: SVGSVGElement = createSvg({
-          ...getSize(),
+          ...size,
           path: pathSvg,
           classname: randomId,
-          // fill: getComputedStyle(componentRef).backgroundColor,
-          fill: 'tomato',
+          fill: props.borderColor || resultCssStyle.color.borderColor,
+          attr: 'border',
         });
 
         const svg2: SVGPathElement = createSvgPath(pathIncludeBorderSvg);
 
         svg2.setAttribute('transform', `translate(${props.borderWidth},${props.borderWidth})`);
+        svg2.setAttribute('fill', props.backgroundColor || resultCssStyle.color.backgroundColor);
+        svg2.setAttribute('squircle', 'background');
         svg.appendChild(svg2);
 
         setSvg(svg);
 
         styleTag.innerHTML = `
         .${props.cornerClass || randomClassname} {
-          position: relative;
+          position: ${getPositionProperty(componentRef)}; 
           background-color: transparent;
+          border-color: transparent;  
+          ${resultCssStyle.css.value}  
+          border-radius: ${props.cornerRadius}px;
         }
 
         .${randomId} {
@@ -99,20 +89,20 @@ const SolidCornerSmoothing: Component<Props> = (props) => {
       `;
       } else {
         const svg: SVGSVGElement = createSvg({
-          // height: 100,
-          // width: 200,
-          ...getSize(),
+          ...size,
           path: pathSvg,
           classname: randomId,
-          // fill: getComputedStyle(componentRef).backgroundColor,
-          fill: 'tomato',
+          fill: props.backgroundColor || resultCssStyle.color.backgroundColor,
+          attr: 'background',
         });
         setSvg(svg);
 
         styleTag.innerHTML = `
         .${props.cornerClass || randomClassname} {
-          position: relative;
+          position: ${getPositionProperty(componentRef)};
           background-color: transparent;
+          ${resultCssStyle.css.value}
+          border-radius: ${props.cornerRadius}px;
         }
 
         .${randomId} {
@@ -122,6 +112,11 @@ const SolidCornerSmoothing: Component<Props> = (props) => {
         }
       `;
       }
+
+      // re-add class to set background color
+      componentRef.classList.add(props.cornerClass || randomClassname);
+      // const count: string = componentRef.dataset.count || '';
+      // componentRef.setAttribute('data-count', !!count ? Number(count) + 1 : 0);
 
       if (!check) {
         document.head.appendChild(styleTag);
@@ -138,26 +133,26 @@ const SolidCornerSmoothing: Component<Props> = (props) => {
     if (regex.test(key as string)) {
       setPropRefs({ ...propRefs(), [key as string]: value });
     }
-    // else {
-    //   switch (key) {
-    //   }
-    // }
   };
 
-  const getOptions = (): Options => {
-    return { ...getSize(), ...propRefs() } as Options;
-  };
+  const getOptions = (border?: boolean): Options => {
+    if (border) {
+      const cornerRadius: number = propRefs().cornerRadius || 0;
+      const borderWidth: number = props.borderWidth || 0;
+      const fitBorderWidth: number = props.fitBorderWidth || 0;
 
-  const getOptionsIncludeBorder = (): Options => {
-    const cornerRadius: number = propRefs().cornerRadius || 0;
-    const borderWidth: number = props.borderWidth || 0;
-    const fitBorderWidth: number = props.fitBorderWidth || 0;
+      const editProps: { cornerRadius: number } = {
+        cornerRadius: cornerRadius - borderWidth + borderWidth / 5 + fitBorderWidth,
+      };
 
-    const editProps: { cornerRadius: number } = {
-      cornerRadius: cornerRadius - borderWidth + borderWidth / 5 + fitBorderWidth,
-    };
+      return {
+        ...getSize(componentRef as HTMLElement, props.borderWidth),
+        ...propRefs(),
+        ...editProps,
+      } as Options;
+    }
 
-    return { ...getSizeIncludeBorder(), ...propRefs(), ...editProps } as Options;
+    return { ...getSize(componentRef as HTMLElement), ...propRefs() } as Options;
   };
 
   const renderPathSvg = (): { path: string; pathIncludeBorder: string } => {
@@ -166,7 +161,7 @@ const SolidCornerSmoothing: Component<Props> = (props) => {
     // with border
     if (props.borderWidth) {
       const pathIncludeBorder: string = createOnlyPath(
-        getOptionsIncludeBorder() as FigmaSquircleParams
+        getOptions(true /*include border*/) as FigmaSquircleParams
       );
 
       return { path, pathIncludeBorder };
@@ -209,6 +204,10 @@ const SolidCornerSmoothing: Component<Props> = (props) => {
     if (resizeObserver) {
       resizeObserver.disconnect();
     }
+
+    // if (mutationObserver) {
+    //   mutationObserver.disconnect();
+    // }
   };
 
   for (const key in props) {
@@ -249,8 +248,30 @@ const SolidCornerSmoothing: Component<Props> = (props) => {
     )
   );
 
+  // const watchClassChange = () => {
+  //   const prevCount = { value: 0 };
+  //   mutationObserver = new MutationObserver(function callback(mutationList: any) {
+  //     mutationList.forEach(function (mutation: any) {
+  //       if (mutation.type === 'attributes' && mutation.attributeName === 'class') {
+  //         // handle class change
+  //         if (prevCount.value !== Number(componentRef?.dataset.count)) {
+  //           console.log('vo');
+  //           prevCount.value = Number(componentRef?.dataset.count);
+  //           renderCorner();
+  //         }
+  //       }
+  //     });
+  //   });
+
+  //   mutationObserver.observe(componentRef as HTMLElement, {
+  //     attributes: true,
+  //   });
+  // };
+
   onMount(() => {
-    renderCorner();
+    // renderCorner();
+    // test
+    // watchClassChange();
   });
 
   onCleanup(() => {

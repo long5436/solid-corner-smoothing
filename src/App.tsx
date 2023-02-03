@@ -4,7 +4,7 @@ import SolidCornerSmoothing from './package';
 import './app.css';
 
 const App: Component = () => {
-  const [enable, setEnable] = createSignal<boolean>(true);
+  const [enable, setEnable] = createSignal<boolean>(false);
 
   return (
     <div>
@@ -16,8 +16,12 @@ const App: Component = () => {
         cornerSmoothing={0.8}
         wrapper="button"
         reSize
-        // borderWidth={3}
+        // borderWidth={1}
+        // borderColor={'green'}
+        // backgroundColor="var(--bg-color)"
+        // style={{ 'background-color': 'yellow', 'border-color': 'tomato' }}
         // preserveSmoothing
+        cornerClass="box"
         // fixRenderChromium
       >
         This is button
