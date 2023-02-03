@@ -20,7 +20,7 @@
 }
 
 .box [squircle='border'] {
-  fill: #555;
+  fill: skyblue;
 }
 
 .box:hover [squircle='border'] {

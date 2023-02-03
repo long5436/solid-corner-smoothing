@@ -1,13 +1,7 @@
 import { getSvgPath } from 'figma-squircle';
-import type {
-  OptionsCreateSVG,
-  FigmaSquircleParams,
-  Size,
-  StyleProp,
-  CssStyle,
-  Color,
-} from '../type';
-const defaultLength = 5;
+import type { OptionsCreateSVG, FigmaSquircleParams, Size } from '../type';
+
+const defaultLength = 5; // length of uuid string
 
 export const createUUID = (length?: number): string => {
   return crypto
@@ -32,13 +26,6 @@ export const createSvg = (options: OptionsCreateSVG): SVGSVGElement => {
   squircle.setAttribute('height', options.height as unknown as string);
   squircle.classList.add(options.classname);
 
-  // test
-  // const clipPath = document.createElementNS('http://www.w3.org/2000/svg', 'clipPath');
-  // clipPath.setAttribute('clipPathUnits', 'objectBoundingBox');
-  // squircle.appendChild(clipPath);
-  // squircle.setAttribute('viewBox', '0 0 10 20');
-
-  //
   if (options.path) {
     const pathElement = createSvgPath(options.path);
     if (options.fill) {
@@ -73,27 +60,35 @@ export const getSize = (element: HTMLElement, borderWidth?: number): Size => {
 
     return { width: width - resultBorderWidth, height: height - resultBorderWidth };
   }
-  return { width: 0, height: 0 };
-};
 
-export const createCssFromPropStyle = (data: StyleProp): CssStyle => {
-  const css: { value: string } = { value: '' };
-  const color: Color = {
-    backgroundColor: '',
-    borderColor: '',
-  };
-  for (const key in data) {
-    if (/background-color|background/.test(key)) {
-      color.backgroundColor = data[key] as string;
-    } else if (/border-color/.test(key)) {
-      color.borderColor = data[key] as string;
-    } else css.value += `${key}: ${data[key]};`;
-  }
-  return { css, color };
+  return { width: 0, height: 0 };
 };
 
 export const getPositionProperty = (element: HTMLElement): string => {
   const currentPosition: string = getComputedStyle(element).position;
 
   return currentPosition === 'static' ? 'relative' : currentPosition;
+};
+
+// test
+export const computedBorderSize = (rawWidth: number): number => {
+  // 0.2 => adjust the parameter by 1px
+  return rawWidth - rawWidth * 0.2;
+};
+
+export const setCssStyle = (id: string, callback: () => string): void => {
+  let styleTag: HTMLElement | null = document.getElementById(id);
+  const check = !!styleTag;
+
+  if (!styleTag) {
+    styleTag = document.createElement('style');
+    styleTag.setAttribute('type', 'text/css');
+    styleTag.id = id;
+  }
+
+  styleTag.innerHTML = callback();
+
+  if (!check) {
+    document.head.appendChild(styleTag);
+  }
 };
