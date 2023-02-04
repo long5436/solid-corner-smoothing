@@ -1,17 +1,36 @@
+:root {
+  --bg-color: pink;
+}
+
 .box {
   display: flex;
   justify-content: center;
   align-items: center;
-  width: 200px;
+  width: 100px;
   height: 100px;
   border: none;
-  background-color: tomato;
+  cursor: pointer;
+  /* position: absolute; */
+  /* background-color: pink; */
+  /* border-color: skyblue; */
 }
 
-.box::after{
-  background-color: #ddd;
+.box [squircle='background'] {
+  fill: var(--bg-color);
 }
+
+.box [squircle='border'] {
+  fill: #999;
+}
+
+.box:hover [squircle='border'] {
+  fill: goldenrod;
+}
+
+/* .box path:last-child {
+  fill: var(--bg-color);
+} */
 
 .test {
-  background-color: green;
+  --bg-color: palegreen;
 }

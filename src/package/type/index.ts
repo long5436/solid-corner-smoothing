@@ -22,7 +22,15 @@ export interface Props {
   cornerClass?: string;
   debounce?: number;
   fitBorderWidth?: number;
-  fixRenderChromium?: boolean;
+}
+
+export interface OptionsCreateSVG {
+  width: number;
+  height: number;
+  fill?: string;
+  path?: string;
+  classname: string;
+  attr?: string;
 }
 
 export type Options = FigmaSquircleParams;
