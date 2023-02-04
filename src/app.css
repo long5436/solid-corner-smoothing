@@ -6,7 +6,7 @@
   display: flex;
   justify-content: center;
   align-items: center;
-  width: 100%;
+  width: 100px;
   height: 100px;
   border: none;
   cursor: pointer;
@@ -20,7 +20,7 @@
 }
 
 .box [squircle='border'] {
-  fill: skyblue;
+  fill: #999;
 }
 
 .box:hover [squircle='border'] {

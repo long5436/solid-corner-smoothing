@@ -8,7 +8,7 @@ import {
   createOnlyPath,
   getSize,
   getPositionProperty,
-  computedBorderSize,
+  // computedBorderSize,
   setCssStyle,
 } from '../utils';
 import type { Component, Props, Options, FigmaSquircleParams, Size } from '../type';
@@ -46,10 +46,9 @@ const SolidCornerSmoothing: Component<Props> = (props) => {
           attr: 'border',
         });
 
-        const pathBackground: SVGPathElement = createSvgPath(pathIncludeBorderSvg);
-        const fitBorderSize: number = computedBorderSize(props.borderWidth);
-
-        pathBackground.setAttribute('transform', `translate(${fitBorderSize},${fitBorderSize})`);
+        const transform = `translate(${props.borderWidth},${props.borderWidth})`;
+        const pathBackground: SVGPathElement = createSvgPath(pathIncludeBorderSvg, transform);
+        // const fitBorderSize: number = computedBorderSize(props.borderWidth);
         pathBackground.setAttribute('fill', props.backgroundColor || 'currentColor');
         pathBackground.setAttribute('squircle', 'background');
         pathBorder.appendChild(pathBackground);
@@ -119,11 +118,11 @@ const SolidCornerSmoothing: Component<Props> = (props) => {
   const getOptions = (border?: boolean): Options => {
     if (border) {
       const cornerRadius: number = propRefs().cornerRadius || 0;
-      const borderWidth: number = props.borderWidth ? computedBorderSize(props.borderWidth) : 0;
+      const borderWidth: number = props.borderWidth ? props.borderWidth : 0;
       const fitBorderWidth: number = props.fitBorderWidth || 0;
 
       const editProps: { cornerRadius: number } = {
-        cornerRadius: cornerRadius - borderWidth + borderWidth / 10 + fitBorderWidth,
+        cornerRadius: cornerRadius - borderWidth + borderWidth / 5 + fitBorderWidth,
       };
 
       return {

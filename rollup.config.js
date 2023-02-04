@@ -4,6 +4,7 @@ import dts from 'rollup-plugin-dts';
 import terser from '@rollup/plugin-terser';
 import size from 'rollup-plugin-sizes';
 import bundleSize from 'rollup-plugin-bundle-size';
+import commonjs from '@rollup/plugin-commonjs';
 
 export default [
   {
@@ -15,7 +16,7 @@ export default [
       },
     ],
     // external: ['solid-js', 'solid-js/web', 'figma-squircle'],
-    external: ['solid-js', 'solid-js/web'],
+    external: ['solid-js', 'solid-js/web', 'svgpath'],
     plugins: [
       nodeResolve({
         extensions: ['.js', '.ts', '.tsx'],
@@ -24,10 +25,13 @@ export default [
         extensions: ['.js', '.ts', '.tsx'],
         babelHelpers: 'bundled',
         presets: ['solid', '@babel/preset-typescript'],
-        exclude: 'node_modules/**',
+        assumptions: {
+          mutableTemplateObject: true,
+        },
         minified: true,
       }),
-      terser(),
+      commonjs(),
+      terser({ compress: { passes: 2 } }),
       size(),
       bundleSize(),
     ],

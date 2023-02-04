@@ -31,6 +31,9 @@ rollup.config.js
 babel.config.cjs
 vite.config.ts
 .eslintrc.json
-.prettierc
+.prettierrc
 babel.config.cjs
-pnpm.config.js
+pnpm-lock.yaml
+tsconfig.json
+.npmignore
+.gitignore

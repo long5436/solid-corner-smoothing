@@ -1,4 +1,5 @@
 import { getSvgPath } from 'figma-squircle';
+import svgpath from 'svgpath';
 import type { OptionsCreateSVG, FigmaSquircleParams, Size } from '../type';
 
 const defaultLength = 5; // length of uuid string
@@ -10,10 +11,27 @@ export const createUUID = (length?: number): string => {
     .substring(0, length || defaultLength);
 };
 
-export const createSvgPath = (path: string): SVGPathElement => {
+// const  isInvalidD = (s:string) :boolean=>{
+//   const reEverythingAllowed = /[MmZzLlHhVvCcSsQqTtAa0-9-,.\s]/g;
+
+//   const bContainsIllegalCharacter = !!s.replace(reEverythingAllowed,'').length;
+//   const bContainsAdjacentLetters = /[a-zA-Z][a-zA-Z]/.test(s);
+//   const bInvalidStart = /^[0-9-,.]/.test(s);
+//   const bInvalidEnd = /.*[-,.]$/.test(s.trim());
+
+//   return bContainsIllegalCharacter || bContainsAdjacentLetters || bInvalidStart || bInvalidEnd;
+// }
+
+export const createSvgPath = (path: string, transform?: string): SVGPathElement => {
   const pathElement = document.createElementNS('http://www.w3.org/2000/svg', 'path');
   if (path) {
-    pathElement.setAttribute('d', path);
+    const resultPath: string = svgpath(path)
+      .rel()
+      .transform(transform || '')
+      .round(1)
+      .toString();
+
+    pathElement.setAttribute('d', resultPath);
   }
 
   return pathElement;
@@ -71,10 +89,11 @@ export const getPositionProperty = (element: HTMLElement): string => {
 };
 
 // test
-export const computedBorderSize = (rawWidth: number): number => {
-  // 0.2 => adjust the parameter by 1px
-  return rawWidth - rawWidth * 0.2;
-};
+// export const computedBorderSize = (rawWidth: number): number => {
+//   // 0.2 => adjust the parameter by 1px
+//   // return rawWidth - rawWidth * 0.2;
+//   return rawWidth;
+// };
 
 export const setCssStyle = (id: string, callback: () => string): void => {
   let styleTag: HTMLElement | null = document.getElementById(id);

@@ -1,6 +1,6 @@
 import { Component, createSignal } from 'solid-js';
-// import SolidCornerSmoothing from "../dist";
-import SolidCornerSmoothing from './package';
+import SolidCornerSmoothing from "../dist";
+// import SolidCornerSmoothing from './package';
 import './app.css';
 
 const App: Component = () => {
@@ -23,6 +23,7 @@ const App: Component = () => {
         cornerSmoothing={0.8}
         wrapper="form"
         reSize
+        // debounce={200}
         borderWidth={borderW()}
         // borderColor={'green'}
         // backgroundColor="var(--bg-color)"
