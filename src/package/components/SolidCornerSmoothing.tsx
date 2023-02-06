@@ -21,7 +21,7 @@ const SolidCornerSmoothing: Component<Props> = (props) => {
   const randomClassname: string = 'corner' + createUUID();
   const regex =
     /cornerRadius|cornerSmoothing|topLeftCornerRadius|topRightCornerRadius|bottomRightCornerRadius|bottomLeftCornerRadius|preserveSmoothing/;
-  const keyReRenderCorner = /wrapper|borderWidth|borderColor|backgroundColor/;
+  const keyReRenderCorner = /wrapper|borderWidth|borderColor|backgroundColor|reSize/;
 
   // refs
   // eslint-disable-next-line @typescript-eslint/ban-ts-comment
@@ -210,6 +210,7 @@ const SolidCornerSmoothing: Component<Props> = (props) => {
             renderCorner();
           }
         }
+
       },
       { defer: true }
     )
@@ -227,6 +228,21 @@ const SolidCornerSmoothing: Component<Props> = (props) => {
 
   onMount(() => {
     setPropRefs({ ...props });
+    const rendered = { value: false };
+
+    for (const key in props) {
+      if (keyReRenderCorner.test(key)) {
+        rendered.value = true;
+        break;
+      }
+    }
+
+    if (!props.reSize) {
+      callRenderCorner();
+    }
+
+    !rendered.value && callRenderCorner();
+
   });
 
   onCleanup(() => {

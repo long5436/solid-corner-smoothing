@@ -1,4 +1,4 @@
-# Solid corner smoothoing
+# Solid corner smoothing
 
 This is a component package used to create smooth curved corners for solidJS, if you use react there is a similar package ([https://www.npmjs.com/package/corner-smoothing](https://www.npmjs.com/package/corner-smoothing)). You can use it easily for basic tags or a solid-styled-components.
 
@@ -124,7 +124,7 @@ return (
 
 ### Use css with border
 
-You can also use css if you don't use color props, if you don't have border then no css for ::after
+You can also use css if you don't use color props
 
 ```jsx
 return (
@@ -136,7 +136,6 @@ return (
       wrapper="button"
       borderWidth={2}
       preserveSmoothing
-      fixRenderChromium
     >
       This is button
     </SolidCornerSmoothing>

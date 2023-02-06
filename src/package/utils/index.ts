@@ -1,8 +1,9 @@
 import { getSvgPath } from 'figma-squircle';
 import svgpath from 'svgpath';
-import type { OptionsCreateSVG, FigmaSquircleParams, Size } from '../type';
+import type { OptionsCreateSVG, FigmaSquircleParams, Size, OptionsDefault } from '../type';
 
 const defaultLength = 5; // length of uuid string
+const cornerDefault: OptionsDefault = { cornerSmoothing: 1, cornerRadius: 10 };
 
 export const createUUID = (length?: number): string => {
   return crypto
@@ -63,7 +64,7 @@ export const createSvg = (options: OptionsCreateSVG): SVGSVGElement => {
 };
 
 export const createOnlyPath = (options: FigmaSquircleParams) => {
-  const path: string = getSvgPath(options);
+  const path: string = getSvgPath({...cornerDefault,...options});
   return path;
 };
 

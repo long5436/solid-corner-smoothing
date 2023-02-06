@@ -35,9 +35,13 @@ export interface OptionsCreateSVG {
 
 export type Options = FigmaSquircleParams;
 
+export type OptionsDefault= {cornerSmoothing: number;
+  cornerRadius: number;}
+
 export type Size = {
   width: number;
   height: number;
 };
+
 
 export type { Component, JSXElement, FigmaSquircleParams };
