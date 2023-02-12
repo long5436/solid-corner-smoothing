@@ -6,10 +6,22 @@ const defaultLength = 5; // length of uuid string
 const cornerDefault: OptionsDefault = { cornerSmoothing: 1, cornerRadius: 10 };
 
 export const createUUID = (length?: number): string => {
-  return crypto
-    .randomUUID()
-    .replaceAll('-', '')
-    .substring(0, length || defaultLength);
+  function generateNumber(limit: number): number {
+    const value: number = limit * Math.random();
+    return value | 0;
+  }
+  function generateX(): string {
+    const value = generateNumber(16);
+    return value.toString(16);
+  }
+  function generateXes(count: number): string {
+    let result = '';
+    for (let i = 0; i < count; ++i) {
+      result += generateX();
+    }
+    return result;
+  }
+  return generateXes(length || defaultLength);
 };
 
 // const  isInvalidD = (s:string) :boolean=>{
@@ -64,7 +76,7 @@ export const createSvg = (options: OptionsCreateSVG): SVGSVGElement => {
 };
 
 export const createOnlyPath = (options: FigmaSquircleParams) => {
-  const path: string = getSvgPath({...cornerDefault,...options});
+  const path: string = getSvgPath({ ...cornerDefault, ...options });
   return path;
 };
 

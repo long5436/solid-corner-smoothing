@@ -1,6 +1,6 @@
 import { Component, createSignal } from 'solid-js';
-// import SolidCornerSmoothing from "../dist";
-import SolidCornerSmoothing from './package';
+import SolidCornerSmoothing from "../dist";
+// import SolidCornerSmoothing from './package';
 import './app.css';
 
 const App: Component = () => {
@@ -19,12 +19,12 @@ const App: Component = () => {
       <SolidCornerSmoothing
         class="box"
         classList={{ test: enable() }}
-        cornerRadius={25}
-        cornerSmoothing={0.8}
+        // cornerRadius={25}
+        // cornerSmoothing={0.8}
         // wrapper="form"
-        reSize
+        // reSize
         // debounce={200}
-        borderWidth={borderW()}
+        // borderWidth={borderW()}
         // borderColor={'green'}
         // backgroundColor="var(--bg-color)"
         preserveSmoothing
