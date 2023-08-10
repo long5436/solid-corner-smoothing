@@ -1,5 +1,5 @@
 import { Component, createSignal } from 'solid-js';
-import SolidCornerSmoothing from "../dist";
+import SolidCornerSmoothing from "../dist/server";
 // import SolidCornerSmoothing from './package';
 import './app.css';
 

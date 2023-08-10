@@ -1,18 +1,16 @@
 {
   "name": "solid-corner-smoothing",
-  "version": "0.1.4",
+  "version": "0.1.5",
   "description": "Component package to create smooth corners for Solid",
   "author": "Nguyen Van Long",
   "scripts": {
     "start": "vite",
     "dev": "vite",
-    "build": "vite build",
-    "build-bundle": "tsc && rollup -c",
-    "serve": "vite preview"
+    "build": "tsup"
   },
   "license": "MIT",
-  "main": "dist/index.js",
-  "types": "dist/index.d.ts",
+  "main": "./dist/server.js",
+  "types": "./dist/index.d.ts",
   "type": "module",
   "files": [
     "dist"
@@ -36,28 +34,55 @@
     "access": "public"
   },
   "dependencies": {
-    "svgpath": "^2.6.0"
+    "solid-js": "^1.7.9"
   },
   "devDependencies": {
-    "@babel/core": "^7.20.12",
-    "@rollup/plugin-babel": "^6.0.3",
-    "@rollup/plugin-commonjs": "^24.0.1",
-    "@rollup/plugin-node-resolve": "^15.0.1",
-    "@rollup/plugin-terser": "^0.4.0",
-    "@types/babel__core": "^7.20.0",
-    "@types/node": "^18.11.18",
+    "@types/node": "^18.16.19",
     "@typescript-eslint/eslint-plugin": "^5.49.0",
     "@typescript-eslint/parser": "^5.49.0",
     "eslint": "^8.32.0",
-    "figma-squircle": "^0.3.0",
-    "rollup": "^3.8.1",
-    "rollup-plugin-bundle-size": "^1.0.3",
-    "rollup-plugin-dts": "^5.1.1",
-    "rollup-plugin-sizes": "^1.0.5",
-    "solid-js": "^1.6.6",
-    "typescript": "^4.9.4",
-    "vite": "^4.0.3",
-    "vite-plugin-dts": "^1.7.1",
-    "vite-plugin-solid": "^2.5.0"
-  }
+    "figma-squircle": "^0.3.1",
+    "solid-start": "^0.3.1",
+    "typescript": "^4.9.5",
+    "vite": "^4.4.6",
+    "vite-plugin-solid": "^2.5.0",
+    "svgpath": "^2.6.0",
+    "tsup": "^7.2.0",
+    "tsup-preset-solid": "^2.0.2"
+  },
+  "module": "./dist/server.js",
+  "browser": {
+    "./dist/server.js": "./dist/index.js"
+  },
+  "exports": {
+    "worker": {
+      "import": {
+        "types": "./dist/index.d.ts",
+        "default": "./dist/server.js"
+      }
+    },
+    "browser": {
+      "import": {
+        "types": "./dist/index.d.ts",
+        "default": "./dist/index.js"
+      }
+    },
+    "deno": {
+      "import": {
+        "types": "./dist/index.d.ts",
+        "default": "./dist/server.js"
+      }
+    },
+    "node": {
+      "import": {
+        "types": "./dist/index.d.ts",
+        "default": "./dist/server.js"
+      }
+    },
+    "import": {
+      "types": "./dist/index.d.ts",
+      "default": "./dist/index.js"
+    }
+  },
+  "typesVersions": {}
 }
