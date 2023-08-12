@@ -1,6 +1,6 @@
 import { getSvgPath } from 'figma-squircle';
 import svgpath from 'svgpath';
-import type { CreateCss, FigmaSquircleParams, OptionsDefault, Size } from '../type';
+import type { FigmaSquircleParams, OptionsCreateSVG, OptionsDefault, Size } from '../type';
 
 const defaultLength = 5; // length of uuid string
 const cornerDefault: OptionsDefault = { cornerSmoothing: 1, cornerRadius: 10 };
@@ -35,8 +35,8 @@ export const createUUID = (length?: number): string => {
 //   return bContainsIllegalCharacter || bContainsAdjacentLetters || bInvalidStart || bInvalidEnd;
 // }
 
-export const createSvgPath = (path: string, transform?: string): string => {
-  // const pathElement = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+export const createSvgPath = (path: string, transform?: string): SVGPathElement => {
+  const pathElement = document.createElementNS('http://www.w3.org/2000/svg', 'path');
   if (path) {
     const resultPath: string = svgpath(path)
       .rel()
@@ -44,40 +44,36 @@ export const createSvgPath = (path: string, transform?: string): string => {
       .round(1)
       .toString();
 
-    return resultPath;
-
-    // pathElement.setAttribute('d', resultPath);
+    pathElement.setAttribute('d', resultPath);
   }
 
-  return '';
-
-  // return pathElement;
+  return pathElement;
 };
 
-// export const createSvg = (options: OptionsCreateSVG): SVGSVGElement => {
-//   const squircle = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
-//   squircle.setAttribute('xmlns', 'http://www.w3.org/2000/svg');
-//   squircle.setAttribute('width', options.width as unknown as string);
-//   squircle.setAttribute('height', options.height as unknown as string);
-//   squircle.classList.add(options.classname);
+export const createSvg = (options: OptionsCreateSVG): SVGSVGElement => {
+  const squircle = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+  squircle.setAttribute('xmlns', 'http://www.w3.org/2000/svg');
+  squircle.setAttribute('width', options.width as unknown as string);
+  squircle.setAttribute('height', options.height as unknown as string);
+  squircle.classList.add(options.classname);
 
-//   if (options.path) {
-//     const pathElement = createSvgPath(options.path);
-//     if (options.fill) {
-//       pathElement.setAttribute('fill', options.fill);
-//     } else {
-//       pathElement.setAttribute('fill', 'currentColor');
-//     }
+  if (options.path) {
+    const pathElement = createSvgPath(options.path);
+    if (options.fill) {
+      pathElement.setAttribute('fill', options.fill);
+    } else {
+      pathElement.setAttribute('fill', 'currentColor');
+    }
 
-//     if (options.attr) {
-//       pathElement.setAttribute('squircle', options.attr);
-//     }
+    if (options.attr) {
+      pathElement.setAttribute('squircle', options.attr);
+    }
 
-//     squircle.appendChild(pathElement);
-//   }
+    squircle.appendChild(pathElement);
+  }
 
-//   return squircle;
-// };
+  return squircle;
+};
 
 export const createOnlyPath = (options: FigmaSquircleParams) => {
   const path: string = getSvgPath({ ...cornerDefault, ...options });
@@ -112,7 +108,7 @@ export const getPositionProperty = (element: HTMLElement): string => {
 //   return rawWidth;
 // };
 
-export const setCssStyle = (id: string, rawCss: string): void => {
+export const setCssStyle = (id: string, callback: () => string): void => {
   let styleTag: HTMLElement | null = document.getElementById(id);
   const check = !!styleTag;
 
@@ -122,24 +118,9 @@ export const setCssStyle = (id: string, rawCss: string): void => {
     styleTag.id = id;
   }
 
-  styleTag.innerHTML = rawCss;
+  styleTag.innerHTML = callback();
 
   if (!check) {
     document.head.appendChild(styleTag);
   }
-};
-
-export const createCss = (data: CreateCss): string => {
-  let properiesString = '';
-  if (data.id || data.class) {
-    for (const key in data.properies) {
-      if (Object.prototype.hasOwnProperty.call(data.properies, key)) {
-        properiesString += key + ':' + data.properies[key] + ';';
-      }
-    }
-
-    return data.id ? '#' + data.id : (('.' + data.class + '{' + properiesString + '}') as string);
-  }
-
-  return '';
 };
