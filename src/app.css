@@ -6,13 +6,20 @@
   display: flex;
   justify-content: center;
   align-items: center;
-  width: 100px;
-  height: 100px;
+  width: 200px;
+  height: 200px;
   border: none;
   cursor: pointer;
   /* position: absolute; */
   /* background-color: pink; */
   /* border-color: skyblue; */
+  /* overflow: hidden; */
+  /* border: 10px solid gold; */
+}
+
+.box img {
+  height: inherit;
+  width: inherit;
 }
 
 .box [squircle='background'] {
@@ -33,4 +40,27 @@
 
 .test {
   --bg-color: palegreen;
+}
+
+.icon {
+  width: 200px;
+  height: 200px;
+  background-color: rgb(0, 152, 75);
+}
+
+.icon [squircle='background'] {
+  fill: rgb(0, 152, 75);
+}
+
+.boxtest {
+  border: 10px solid gold;
+  height: 200px;
+  width: 200px;
+  border-radius: 50px;
+  overflow: hidden;
+}
+
+.boxtest img {
+  height: inherit;
+  width: inherit;
 }

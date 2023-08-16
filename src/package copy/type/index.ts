@@ -42,4 +42,12 @@ export type Size = {
   height: number;
 };
 
+export type CreateCss = {
+  class?: string;
+  id?: string;
+  properies: {
+    [name: string]: string | number;
+  };
+};
+
 export type { Component, FigmaSquircleParams, JSXElement };

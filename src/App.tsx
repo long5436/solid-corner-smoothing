@@ -1,12 +1,13 @@
 import { Component, createSignal } from 'solid-js';
 // import SolidCornerSmoothing from "../dist/server";
-import Package from '../dist/server';
 import './app.css';
+import Soundcloud from './assets/Danleech-Simple-Soundcloud.1024.png';
+import iconPhone from './assets/iconPhone.svg';
 import SolidCornerSmoothing from './package';
 
 const App: Component = () => {
   const [enable, setEnable] = createSignal<boolean>(false);
-  const [borderW, setBorderW] = createSignal<number>(1);
+  const [borderW, setBorderW] = createSignal<number>(10);
 
   return (
     <div>
@@ -18,37 +19,57 @@ const App: Component = () => {
         <input type="number" value={borderW()} onInput={(e: any) => setBorderW(e.target.value)} />
       </label>
       <SolidCornerSmoothing
-        class="box"
+        class="icon"
         classList={{ test: enable() }}
-        cornerRadius={25}
-        // cornerSmoothing={0.8}
-        // wrapper="form"
-        reSize
-        // debounce={200}
-        borderWidth={borderW()}
-        borderColor={'green'}
-        // backgroundColor="var(--bg-color)"
-        preserveSmoothing
-        // cornerClass="box"
-      >
-        This is button
-      </SolidCornerSmoothing>
-      <Package
-        class="box"
-        classList={{ test: enable() }}
-        cornerRadius={25}
+        options={{
+          cornerSmoothing: 1,
+          cornerRadius: 60,
+          reSize: true,
+        }}
+        // cornerRadius={60}
         // cornerSmoothing={0.8}
         // wrapper="form"
         // reSize
         // debounce={200}
-        borderWidth={borderW()}
-        borderColor={'green'}
+        // borderWidth={borderW()}
+        // borderColor={'green'}
         // backgroundColor="var(--bg-color)"
-        preserveSmoothing
+        // preserveSmoothing
         // cornerClass="box"
       >
-        This is button
-      </Package>
+        <img src={iconPhone} />
+      </SolidCornerSmoothing>
+      <br />
+      <SolidCornerSmoothing
+        class="box"
+        classList={{ test: enable() }}
+        options={{
+          cornerSmoothing: 1,
+          cornerRadius: 60,
+          reSize: true,
+          border: {
+            size: borderW(),
+            color: 'green',
+          },
+        }}
+        // cornerRadius={55}
+        // cornerSmoothing={1}
+        // wrapper="form"
+        // reSize
+        // debounce={200}
+        // borderWidth={borderW()}
+        // borderColor={'green'}
+        // backgroundColor="var(--bg-color)"
+        // preserveSmoothing
+        // cornerClass="box"
+      >
+        <img src={Soundcloud} alt="" />
+      </SolidCornerSmoothing>
+
+      <br />
+      <div class="boxtest">
+        <img src={Soundcloud} alt="" />
+      </div>
     </div>
   );
 };

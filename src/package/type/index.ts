@@ -1,3 +1,4 @@
+import type * as CSS from 'csstype';
 import { FigmaSquircleParams } from 'figma-squircle';
 import { Component, JSXElement } from 'solid-js';
 
@@ -8,32 +9,27 @@ export interface Props {
     [key: string]: boolean;
   };
   wrapper?: Component | string;
-  cornerRadius?: number;
-  cornerSmoothing?: number;
-  topLeftCornerRadius?: number;
-  topRightCornerRadius?: number;
-  bottomRightCornerRadius?: number;
-  bottomLeftCornerRadius?: number;
-  preserveSmoothing?: boolean;
-  borderWidth?: number;
-  borderColor?: string;
-  backgroundColor?: string;
+  options: Options;
+  parent: HTMLElement;
+  arrayClasses: ArrayClasses;
+}
+
+type BorderOption = {
+  border?: {
+    size: number;
+    color: string;
+  };
+};
+
+type OtherOption = {
+  width?: number;
+  height?: number;
   reSize?: boolean;
-  cornerClass?: string;
   debounce?: number;
   fitBorderWidth?: number;
-}
+};
 
-export interface OptionsCreateSVG {
-  width: number;
-  height: number;
-  fill?: string;
-  path?: string;
-  classname: string;
-  attr?: string;
-}
-
-export type Options = FigmaSquircleParams;
+export type Options = Omit<FigmaSquircleParams, 'height' | 'width'> & BorderOption & OtherOption;
 
 export type OptionsDefault = { cornerSmoothing: number; cornerRadius: number };
 
@@ -45,9 +41,12 @@ export type Size = {
 export type CreateCss = {
   class?: string;
   id?: string;
-  properies: {
-    [name: string]: string | number;
-  };
+  properies: CSS.PropertiesHyphen;
 };
 
-export type { Component, FigmaSquircleParams, JSXElement };
+export type ArrayClasses = {
+  contentClass: string;
+  borderClass: string;
+};
+
+export type { CSS, Component, FigmaSquircleParams, JSXElement };

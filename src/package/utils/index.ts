@@ -1,42 +1,23 @@
 import { getSvgPath } from 'figma-squircle';
 import svgpath from 'svgpath';
-import type { CreateCss, FigmaSquircleParams, OptionsDefault, Size } from '../type';
+
+import type { CSS, CreateCss, FigmaSquircleParams, OptionsDefault, Size } from '../type';
 
 const defaultLength = 5; // length of uuid string
 const cornerDefault: OptionsDefault = { cornerSmoothing: 1, cornerRadius: 10 };
 
 export const createUUID = (length?: number): string => {
-  function generateNumber(limit: number): number {
-    const value: number = limit * Math.random();
-    return value | 0;
+  const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz';
+  let className = '';
+
+  for (let i = 0; i < (length || defaultLength); i++) {
+    className += characters.charAt(Math.floor(Math.random() * characters.length));
   }
-  function generateX(): string {
-    const value = generateNumber(16);
-    return value.toString(16);
-  }
-  function generateXes(count: number): string {
-    let result = '';
-    for (let i = 0; i < count; ++i) {
-      result += generateX();
-    }
-    return result;
-  }
-  return generateXes(length || defaultLength);
+
+  return className;
 };
 
-// const  isInvalidD = (s:string) :boolean=>{
-//   const reEverythingAllowed = /[MmZzLlHhVvCcSsQqTtAa0-9-,.\s]/g;
-
-//   const bContainsIllegalCharacter = !!s.replace(reEverythingAllowed,'').length;
-//   const bContainsAdjacentLetters = /[a-zA-Z][a-zA-Z]/.test(s);
-//   const bInvalidStart = /^[0-9-,.]/.test(s);
-//   const bInvalidEnd = /.*[-,.]$/.test(s.trim());
-
-//   return bContainsIllegalCharacter || bContainsAdjacentLetters || bInvalidStart || bInvalidEnd;
-// }
-
 export const createSvgPath = (path: string, transform?: string): string => {
-  // const pathElement = document.createElementNS('http://www.w3.org/2000/svg', 'path');
   if (path) {
     const resultPath: string = svgpath(path)
       .rel()
@@ -45,43 +26,14 @@ export const createSvgPath = (path: string, transform?: string): string => {
       .toString();
 
     return resultPath;
-
-    // pathElement.setAttribute('d', resultPath);
   }
 
   return '';
-
-  // return pathElement;
 };
-
-// export const createSvg = (options: OptionsCreateSVG): SVGSVGElement => {
-//   const squircle = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
-//   squircle.setAttribute('xmlns', 'http://www.w3.org/2000/svg');
-//   squircle.setAttribute('width', options.width as unknown as string);
-//   squircle.setAttribute('height', options.height as unknown as string);
-//   squircle.classList.add(options.classname);
-
-//   if (options.path) {
-//     const pathElement = createSvgPath(options.path);
-//     if (options.fill) {
-//       pathElement.setAttribute('fill', options.fill);
-//     } else {
-//       pathElement.setAttribute('fill', 'currentColor');
-//     }
-
-//     if (options.attr) {
-//       pathElement.setAttribute('squircle', options.attr);
-//     }
-
-//     squircle.appendChild(pathElement);
-//   }
-
-//   return squircle;
-// };
 
 export const createOnlyPath = (options: FigmaSquircleParams) => {
   const path: string = getSvgPath({ ...cornerDefault, ...options });
-  return path;
+  return createSvgPath(path);
 };
 
 export const getSize = (element: HTMLElement, borderWidth?: number): Size => {
@@ -93,36 +45,32 @@ export const getSize = (element: HTMLElement, borderWidth?: number): Size => {
 
     const resultBorderWidth: number = borderWidth ? borderWidth * 2 : 0;
 
-    return { width: width - resultBorderWidth, height: height - resultBorderWidth };
+    return {
+      width: width - resultBorderWidth,
+      height: height - resultBorderWidth,
+    };
   }
 
   return { width: 0, height: 0 };
 };
 
-export const getPositionProperty = (element: HTMLElement): string => {
-  const currentPosition: string = getComputedStyle(element).position;
+export const getPositionProperty = (element: HTMLElement): CSS.Property.Position => {
+  const currentPosition = getComputedStyle(element).position as CSS.Property.Position;
 
   return currentPosition === 'static' ? 'relative' : currentPosition;
 };
 
-// test
-// export const computedBorderSize = (rawWidth: number): number => {
-//   // 0.2 => adjust the parameter by 1px
-//   // return rawWidth - rawWidth * 0.2;
-//   return rawWidth;
-// };
-
-export const setCssStyle = (id: string, rawCss: string): void => {
+export const setCssStyle = (id: string, rawCss: string[]): void => {
   let styleTag: HTMLElement | null = document.getElementById(id);
   const check = !!styleTag;
 
   if (!styleTag) {
     styleTag = document.createElement('style');
     styleTag.setAttribute('type', 'text/css');
-    styleTag.id = id;
+    styleTag.dataset.solidCornerId = id;
   }
 
-  styleTag.innerHTML = rawCss;
+  styleTag.innerHTML = rawCss.reduce((prev: string, e: string) => prev + e, '');
 
   if (!check) {
     document.head.appendChild(styleTag);
@@ -134,7 +82,7 @@ export const createCss = (data: CreateCss): string => {
   if (data.id || data.class) {
     for (const key in data.properies) {
       if (Object.prototype.hasOwnProperty.call(data.properies, key)) {
-        properiesString += key + ':' + data.properies[key] + ';';
+        properiesString += key + ':' + (data.properies as string)[key as any] + ';';
       }
     }
 
@@ -142,4 +90,8 @@ export const createCss = (data: CreateCss): string => {
   }
 
   return '';
+};
+
+export const getElementStyle = (id: string): HTMLElement | null => {
+  return document.querySelector('[data-solid-corner-id=' + id + ']');
 };
