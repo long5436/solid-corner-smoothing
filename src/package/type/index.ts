@@ -41,6 +41,7 @@ export type Size = {
 export type CreateCss = {
   class?: string;
   id?: string;
+  selector?: string;
   properies: CSS.PropertiesHyphen;
 };
 

@@ -2,7 +2,6 @@ import { Component, createSignal } from 'solid-js';
 // import SolidCornerSmoothing from "../dist/server";
 import './app.css';
 import Soundcloud from './assets/Danleech-Simple-Soundcloud.1024.png';
-import iconPhone from './assets/iconPhone.svg';
 import SolidCornerSmoothing from './package';
 
 const App: Component = () => {
@@ -19,7 +18,7 @@ const App: Component = () => {
         <input type="number" value={borderW()} onInput={(e: any) => setBorderW(e.target.value)} />
       </label>
       <SolidCornerSmoothing
-        class="icon"
+        class="icon icon1"
         classList={{ test: enable() }}
         options={{
           cornerSmoothing: 1,
@@ -37,7 +36,7 @@ const App: Component = () => {
         // preserveSmoothing
         // cornerClass="box"
       >
-        <img src={iconPhone} />
+        <img src={Soundcloud} />
       </SolidCornerSmoothing>
       <br />
       <SolidCornerSmoothing
@@ -46,10 +45,10 @@ const App: Component = () => {
         options={{
           cornerSmoothing: 1,
           cornerRadius: 60,
-          reSize: true,
+          // reSize: true,
           border: {
             size: borderW(),
-            color: 'green',
+            color: 'gold',
           },
         }}
         // cornerRadius={55}

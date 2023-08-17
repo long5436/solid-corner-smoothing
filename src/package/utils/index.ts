@@ -79,14 +79,24 @@ export const setCssStyle = (id: string, rawCss: string[]): void => {
 
 export const createCss = (data: CreateCss): string => {
   let properiesString = '';
-  if (data.id || data.class) {
+  let cssNamme = '';
+  if (data.id || data.class || data.selector) {
     for (const key in data.properies) {
       if (Object.prototype.hasOwnProperty.call(data.properies, key)) {
         properiesString += key + ':' + (data.properies as string)[key as any] + ';';
       }
     }
 
-    return data.id ? '#' + data.id : (('.' + data.class + '{' + properiesString + '}') as string);
+    if (data.id) {
+      cssNamme = '#' + data.id;
+    } else if (data.class) {
+      cssNamme = '.' + data.class;
+    } else {
+      cssNamme = data.selector || '';
+    }
+    console.log('23');
+
+    return (cssNamme + '{' + properiesString + '}') as string;
   }
 
   return '';

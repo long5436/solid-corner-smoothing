@@ -17,11 +17,13 @@ const SolidCornerSmoothing: Component<Props> = (props) => {
   const [parentRef, setParentRef] = createSignal<HTMLElement>();
   const [local, other] = splitProps(props, ['children', 'wrapper', 'class']);
   const arrayClasses = {
-    contentClass: local?.class || createUUID(),
+    contentClass: /* local?.class || */ createUUID(),
     borderClass: createUUID(),
   };
   // eslint-disable-next-line prefer-const
   let componentRef: HTMLElement | null = null;
+  // eslint-disable-next-line prefer-const
+  let componentWrapperBorderRef: HTMLElement | null = null;
 
   // createEffect(() => {
   //   setOptionsProps(other.options);
@@ -29,28 +31,50 @@ const SolidCornerSmoothing: Component<Props> = (props) => {
 
   onMount(() => {
     setParentRef(componentRef as unknown as HTMLElement);
+    if (componentWrapperBorderRef) {
+      componentWrapperBorderRef.dataset.solidCornerWrapperBorder = arrayClasses.contentClass;
+    }
     if (!isClient()) setIsClient(true);
   });
 
+  const ContentComponent = () => {
+    return (
+      <>
+        <Show when={isClient()}>
+          <CornerClient
+            {...other}
+            parent={parentRef() as HTMLElement}
+            arrayClasses={arrayClasses}
+          />
+        </Show>
+        <div
+          // classList={{ /*[props.class as any]: !!props.class,*/ [arrayClasses.contentClass]: true }}
+          class={props.class}
+          //  classList={props.classList}
+          ref={componentRef as unknown as HTMLDivElement}
+        >
+          {local.children}
+        </div>
+      </>
+    );
+  };
+
   return (
-    <Dynamic
-      classList={{
-        [arrayClasses.borderClass]: props?.options?.border,
-        [local?.class || '']: !props?.options?.border,
-        [arrayClasses.contentClass]: !props?.options?.border,
-      }}
-      component={local.wrapper || componentDefault}
-    >
-      <Show when={isClient()}>
-        <CornerClient {...other} parent={parentRef() as HTMLElement} arrayClasses={arrayClasses} />
-      </Show>
-      <div
-        classList={{ /*[props.class as any]: !!props.class,*/ [arrayClasses.contentClass]: true }}
-        ref={componentRef as unknown as HTMLDivElement}
+    <Show when={props?.options?.border} fallback={<ContentComponent />}>
+      <Dynamic
+        classList={
+          {
+            // [arrayClasses.borderClass]: props?.options?.border,
+            // [local?.class || '']: !props?.options?.border,
+            // [arrayClasses.contentClass]: !props?.options?.border,
+          }
+        }
+        component={local.wrapper || componentDefault}
+        ref={componentWrapperBorderRef}
       >
-        {local.children}
-      </div>
-    </Dynamic>
+        <ContentComponent />
+      </Dynamic>
+    </Show>
   );
 };
 

@@ -1,4 +1,4 @@
-import { Component, Show, createEffect, createSignal } from 'solid-js';
+import { Component, Show, createEffect, createSignal, onMount } from 'solid-js';
 import { FigmaSquircleParams, Options, Props, Size } from '../type';
 import {
   createCss,
@@ -20,6 +20,7 @@ const CornerClient: Component<Props> = (props) => {
   const classBorder: string = createUUID();
   const classBorderContent: string = createUUID();
   const classCloneContent: string = createUUID();
+  const attrId = props.arrayClasses.contentClass.split(' ')[0];
 
   let resizeObserver: ResizeObserver | null = null;
   let timeoutDebounce: ReturnType<typeof setTimeout> | null = null;
@@ -51,7 +52,7 @@ const CornerClient: Component<Props> = (props) => {
         // create style tag to head tag
         setCssStyle(props.arrayClasses.contentClass, [
           createCss({
-            class: props.arrayClasses.contentClass,
+            selector: '[data-solid-corner-content="' + props.arrayClasses.contentClass + '"]',
             properies: {
               'border-radius': localFigmaSquircleOptions().cornerRadius + 'px',
               'clip-path': "path('" + pathSvg + "')",
@@ -61,9 +62,9 @@ const CornerClient: Component<Props> = (props) => {
         ]);
       } else {
         // This check is a must for border use case otherwise width size will be incorrect on first render
-        if (!getElementStyle(props.arrayClasses.contentClass)) {
-          sizeElement.width -= props.options.border.size * 2;
-        }
+        // if (!getElementStyle(props.arrayClasses.contentClass)) {
+        //   sizeElement.width -= props.options.border.size * 2;
+        // }
 
         const pathSvg = createOnlyPath({
           ...sizeElement,
@@ -89,7 +90,7 @@ const CornerClient: Component<Props> = (props) => {
         // create style tag to head tag
         setCssStyle(props.arrayClasses.contentClass, [
           createCss({
-            class: props.arrayClasses.contentClass,
+            selector: '[data-solid-corner-content="' + props.arrayClasses.contentClass + '"]',
             properies: {
               'border-radius': localFigmaSquircleOptions().cornerRadius + 'px',
               'clip-path': "path('" + pathSvg + "')",
@@ -97,7 +98,8 @@ const CornerClient: Component<Props> = (props) => {
             },
           }),
           createCss({
-            class: props.arrayClasses.borderClass,
+            selector:
+              '[data-solid-corner-wrapper-border="' + props.arrayClasses.contentClass + '"]',
             properies: {
               position: getPositionProperty(props.parent as HTMLElement),
               // | undefined,
@@ -113,7 +115,7 @@ const CornerClient: Component<Props> = (props) => {
             },
           }),
           createCss({
-            class: classBorder,
+            selector: '[data-solid-corner-border="' + props.arrayClasses.contentClass + '"]',
             properies: {
               position: 'absolute',
               inset: 0,
@@ -131,7 +133,6 @@ const CornerClient: Component<Props> = (props) => {
   const watchDomResize = (): void => {
     if (props.parent) {
       if (props.options?.reSize) {
-        console.log('vao');
         if (props.options?.debounce) {
           resizeObserver = new ResizeObserver(() => {
             if (timeoutDebounce) clearTimeout(timeoutDebounce);
@@ -145,10 +146,17 @@ const CornerClient: Component<Props> = (props) => {
             createCorner();
           });
         }
-        resizeObserver.observe(props.parent as unknown as HTMLElement);
+        resizeObserver.observe(props.parent);
       } else {
         createCorner();
       }
+    }
+  };
+
+  // remove watch element
+  const removeObserver = (): void => {
+    if (resizeObserver) {
+      resizeObserver.disconnect();
     }
   };
 
@@ -157,16 +165,26 @@ const CornerClient: Component<Props> = (props) => {
     const el = getElementStyle(props.arrayClasses.contentClass);
 
     if (el) el.remove();
-    if (resizeObserver) {
-      resizeObserver.disconnect();
-    }
+    removeObserver();
   };
+
+  onMount(() => {
+    props.parent.dataset.solidCornerContent = attrId;
+
+    resizeObserver = new ResizeObserver(() => {
+      createCorner();
+      removeObserver();
+    });
+    resizeObserver.observe(props.parent);
+  });
 
   return (
     <>
       <Show when={!!localFigmaSquircleOptions().border}>
         {/* <div class={props.arrayClasses.contentClass + ' ' + classCloneContent}> </div> */}
-        <span class={classBorder}>{/* <span class={classBorderContent}></span> */}</span>
+        <span data-solid-corner-border={props.arrayClasses.contentClass}>
+          {/* <span class={classBorderContent}></span> */}
+        </span>
       </Show>
     </>
   );
