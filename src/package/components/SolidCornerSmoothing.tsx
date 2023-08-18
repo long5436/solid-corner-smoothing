@@ -22,8 +22,6 @@ const SolidCornerSmoothing: Component<Props> = (props) => {
   };
   // eslint-disable-next-line prefer-const
   let componentRef: HTMLElement | null = null;
-  // eslint-disable-next-line prefer-const
-  let componentWrapperBorderRef: HTMLElement | null = null;
 
   // createEffect(() => {
   //   setOptionsProps(other.options);
@@ -31,9 +29,6 @@ const SolidCornerSmoothing: Component<Props> = (props) => {
 
   onMount(() => {
     setParentRef(componentRef as unknown as HTMLElement);
-    if (componentWrapperBorderRef) {
-      componentWrapperBorderRef.dataset.solidCornerWrapperBorder = arrayClasses.contentClass;
-    }
     if (!isClient()) setIsClient(true);
   });
 
@@ -70,7 +65,7 @@ const SolidCornerSmoothing: Component<Props> = (props) => {
           }
         }
         component={local.wrapper || componentDefault}
-        ref={componentWrapperBorderRef}
+        data-solid-corner-wrapper-border={arrayClasses.contentClass}
       >
         <ContentComponent />
       </Dynamic>
