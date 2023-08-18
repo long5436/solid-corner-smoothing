@@ -1,6 +1,18 @@
 import type * as CSS from 'csstype';
-import { FigmaSquircleParams } from 'figma-squircle';
+// import { FigmaSquircleParams } from 'figma-squircle';
 import { Component, JSXElement } from 'solid-js';
+
+interface FigmaSquircleParams {
+  cornerRadius?: number;
+  topLeftCornerRadius?: number;
+  topRightCornerRadius?: number;
+  bottomRightCornerRadius?: number;
+  bottomLeftCornerRadius?: number;
+  cornerSmoothing: number;
+  width: number;
+  height: number;
+  preserveSmoothing?: boolean;
+}
 
 export interface Props {
   children?: JSXElement;
@@ -18,6 +30,7 @@ type BorderOption = {
   border?: {
     size: number;
     color: string;
+    fitBorderSize?: number;
   };
 };
 
@@ -26,7 +39,7 @@ type OtherOption = {
   height?: number;
   reSize?: boolean;
   debounce?: number;
-  fitBorderWidth?: number;
+  backgroundColor?: string;
 };
 
 export type Options = Omit<FigmaSquircleParams, 'height' | 'width'> & BorderOption & OtherOption;
@@ -47,7 +60,7 @@ export type CreateCss = {
 
 export type ArrayClasses = {
   contentClass: string;
-  borderClass: string;
+  // borderClass: string;
 };
 
 export type { CSS, Component, FigmaSquircleParams, JSXElement };

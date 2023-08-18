@@ -38,11 +38,11 @@
 }
 
 .boxtest {
-  border: 10px solid gold;
   height: 200px;
   width: 200px;
   border-radius: 50px;
   overflow: hidden;
+  background-color: burlywood;
 }
 
 .boxtest img {

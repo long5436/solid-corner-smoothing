@@ -1,7 +1,8 @@
 import { Component, JSXElement, Show, createSignal, onMount, splitProps } from 'solid-js';
 import { Dynamic } from 'solid-js/web';
 import { Options } from '../type';
-import { createUUID } from '../utils';
+import { attrs } from '../utils/domAttr';
+import { createUUID } from '../utils/svgPathMethods';
 import CornerClient from './CornerClient';
 
 interface Props {
@@ -9,6 +10,9 @@ interface Props {
   wrapper?: Component | string;
   class?: string;
   options: Options;
+  classList?: {
+    [key: string]: boolean;
+  };
 }
 
 const SolidCornerSmoothing: Component<Props> = (props) => {
@@ -17,15 +21,11 @@ const SolidCornerSmoothing: Component<Props> = (props) => {
   const [parentRef, setParentRef] = createSignal<HTMLElement>();
   const [local, other] = splitProps(props, ['children', 'wrapper', 'class']);
   const arrayClasses = {
-    contentClass: /* local?.class || */ createUUID(),
-    borderClass: createUUID(),
+    contentClass: createUUID(),
+    // borderClass: createUUID(),
   };
   // eslint-disable-next-line prefer-const
   let componentRef: HTMLElement | null = null;
-
-  // createEffect(() => {
-  //   setOptionsProps(other.options);
-  // });
 
   onMount(() => {
     setParentRef(componentRef as unknown as HTMLElement);
@@ -42,33 +42,25 @@ const SolidCornerSmoothing: Component<Props> = (props) => {
             arrayClasses={arrayClasses}
           />
         </Show>
-        <div
+        <Dynamic
           // classList={{ /*[props.class as any]: !!props.class,*/ [arrayClasses.contentClass]: true }}
           class={props.class}
-          //  classList={props.classList}
+          classList={props.classList}
           ref={componentRef as unknown as HTMLDivElement}
+          component={local.wrapper || componentDefault}
+          {...{ [attrs.content.name]: arrayClasses.contentClass }}
         >
           {local.children}
-        </div>
+        </Dynamic>
       </>
     );
   };
 
   return (
     <Show when={props?.options?.border} fallback={<ContentComponent />}>
-      <Dynamic
-        classList={
-          {
-            // [arrayClasses.borderClass]: props?.options?.border,
-            // [local?.class || '']: !props?.options?.border,
-            // [arrayClasses.contentClass]: !props?.options?.border,
-          }
-        }
-        component={local.wrapper || componentDefault}
-        data-solid-corner-wrapper-border={arrayClasses.contentClass}
-      >
+      <div {...{ [attrs.wrapperBorder.name]: arrayClasses.contentClass }}>
         <ContentComponent />
-      </Dynamic>
+      </div>
     </Show>
   );
 };

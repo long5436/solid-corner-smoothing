@@ -7,68 +7,54 @@ import SolidCornerSmoothing from './package';
 const App: Component = () => {
   const [enable, setEnable] = createSignal<boolean>(false);
   const [borderW, setBorderW] = createSignal<number>(10);
+  const [show, setShow] = createSignal<boolean>(true);
 
   return (
     <div>
       <button onClick={() => setEnable(!enable())} style={{ 'margin-bottom': '10px' }}>
         Test
       </button>
+      <button onClick={() => setShow(!show())}>Hide</button>
       <label>
         border width:
         <input type="number" value={borderW()} onInput={(e: any) => setBorderW(e.target.value)} />
       </label>
-      <SolidCornerSmoothing
-        class="icon icon1"
-        classList={{ test: enable() }}
-        options={{
-          cornerSmoothing: 1,
-          cornerRadius: 60,
-          reSize: true,
-        }}
-        // cornerRadius={60}
-        // cornerSmoothing={0.8}
-        // wrapper="form"
-        // reSize
-        // debounce={200}
-        // borderWidth={borderW()}
-        // borderColor={'green'}
-        // backgroundColor="var(--bg-color)"
-        // preserveSmoothing
-        // cornerClass="box"
-      >
-        <img src={Soundcloud} />
-      </SolidCornerSmoothing>
+
       <br />
       <SolidCornerSmoothing
         class="box"
         classList={{ test: enable() }}
+        wrapper={'form'}
         options={{
           cornerSmoothing: 1,
-          cornerRadius: 60,
-          // reSize: true,
-          border: {
-            size: borderW(),
-            color: 'gold',
-          },
+          // cornerRadius: 60,
+          topLeftCornerRadius: 50,
+          topRightCornerRadius: 40,
+          bottomRightCornerRadius: 30,
+          bottomLeftCornerRadius: 10,
+          reSize: true,
+          debounce: 100,
         }}
-        // cornerRadius={55}
-        // cornerSmoothing={1}
-        // wrapper="form"
-        // reSize
-        // debounce={200}
-        // borderWidth={borderW()}
-        // borderColor={'green'}
-        // backgroundColor="var(--bg-color)"
-        // preserveSmoothing
-        // cornerClass="box"
       >
         <img src={Soundcloud} alt="" />
       </SolidCornerSmoothing>
 
       <br />
-      <div class="boxtest">
-        <img src={Soundcloud} alt="" />
-      </div>
+      {show() && (
+        <SolidCornerSmoothing
+          class="boxtest"
+          options={{
+            cornerSmoothing: 1,
+            cornerRadius: 60,
+            // reSize: true,
+            border: {
+              size: borderW(),
+              color: enable() ? 'pink' : 'gold',
+            },
+            // backgroundColor: 'pink',
+          }}
+        ></SolidCornerSmoothing>
+      )}
     </div>
   );
 };
