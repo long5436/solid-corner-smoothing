@@ -141,9 +141,9 @@ return (
       options={{
         cornerRadius: 30,
         cornerSmoothing: 0.8,
-        preserveSmoothing:true
+        preserveSmoothing: true
         border: {
-          color:"tomato",
+          color: "tomato",
           size: 2
         }
       }}

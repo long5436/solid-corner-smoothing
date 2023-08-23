@@ -17,6 +17,7 @@ export default defineConfig({
   build: {
     target: 'esnext',
     sourcemap: true,
+    outDir: '../doc',
   },
   optimizeDeps: {
     // Add both @codemirror/state and @codemirror/view to included deps to optimize
