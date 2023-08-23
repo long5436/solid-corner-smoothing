@@ -143,7 +143,7 @@ return (
         cornerSmoothing: 0.8,
         preserveSmoothing:true
         border: {
-          color:"red",
+          color:"tomato",
           size: 2
         }
       }}
@@ -161,7 +161,7 @@ return (
   align-items: center;
   width: 200px;
   height: 100px;
-  background-color: tomato;
+  background-color: gray;
 }
 ```
 
