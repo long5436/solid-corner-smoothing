@@ -1,0 +1,177 @@
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
+    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
+    sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+code {
+  font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
+    monospace;
+}
+
+.nav {
+  height: 50px;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.2);
+  margin-bottom: 20px;
+
+  .content-nav {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    height: 100%;
+
+    .name {
+      margin: 0;
+      font-weight: 500;
+    }
+
+    .link {
+      width: 30px;
+      height: 30px;
+      margin-left: 20px;
+
+      svg {
+        width: inherit;
+        height: inherit;
+        fill: rgba(0, 0, 0, 0.6);
+      }
+
+      &:hover {
+        svg {
+          fill: skyblue;
+        }
+      }
+    }
+  }
+}
+
+.container {
+  padding: 0 20px;
+  height: inherit;
+}
+
+.control {
+  .table {
+    width: 100%;
+
+    td {
+      padding: 6px 0;
+      border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+      // border: 1px solid;
+
+      .current-value {
+        color: red;
+        font-weight: 500;
+      }
+    }
+
+    .diabled {
+      opacity: 0.4;
+      cursor: default;
+    }
+
+    input[type='range'] {
+      width: 100%;
+    }
+
+    label {
+      display: block;
+      position: relative;
+      left: 0;
+      top: 0;
+      width: 50px;
+      height: 20px;
+      background: rgba(0, 0, 0, 0.1);
+      border: 1px solid #2193f1;
+      border-radius: 0.2em;
+
+      input {
+        display: none;
+      }
+
+      input ~ span {
+        position: absolute;
+        top: 2px;
+        left: 2px;
+        width: 22px;
+        height: 14px;
+        background: rgba(0, 0, 0, 0.2);
+      }
+
+      input:checked ~ span {
+        left: unset;
+        right: 2px;
+        background: #2193f1;
+      }
+    }
+  }
+}
+
+.flex {
+  padding-top: 20px;
+  .content {
+    display: inline-block;
+    text-align: center;
+
+    &:first-child {
+      margin-right: 40px;
+    }
+
+    h3 {
+      margin: 0;
+      font-weight: 500;
+    }
+  }
+}
+
+.box {
+  width: 200px;
+  height: 200px;
+  overflow: hidden;
+
+  img {
+    width: 100%;
+    height: 100%;
+  }
+}
+
+.resize {
+  padding-bottom: 20px;
+  .box2 {
+    width: 100%;
+    // height: 100%;
+    background-color: #45bd1e;
+    padding: 30px;
+    font-weight: 500;
+    color: #fff;
+  }
+}
+
+.code {
+  font-size: 1rem;
+}
+
+.link-document {
+  color: #2193f1;
+}
+
+@media screen and (min-width: 769px) {
+  .content {
+    display: flex;
+
+    .item {
+      width: 50%;
+
+      &:last-child {
+        padding-left: 80px;
+      }
+    }
+  }
+}

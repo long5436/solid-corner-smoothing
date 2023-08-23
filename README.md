@@ -29,11 +29,13 @@ const App = () => {
     <div>
       <SolidCornerSmoothing
         class="box"
-        cornerRadius={40}
-        cornerSmoothing={0.7}
-        reSize
-        preserveSmoothing
-        debounce={100}
+        options={{
+          cornerRadius: 40,
+          cornerSmoothing: 0.8,
+          reSize: true,
+          debounce: 100,
+          preserveSmoothing: true, // default = true
+        }}
       >
         This is box
       </SolidCornerSmoothing>
@@ -58,11 +60,13 @@ return (
   <div>
     <SolidCornerSmoothing
       class="box"
-      cornerRadius={radius()}
-      cornerSmoothing={smoothing()}
-      reSize
-      preserveSmoothing
-      debounce={100}
+      options={{
+        cornerRadius: radius(),
+        cornerSmoothing: smoothing(),
+        preserveSmoothing: true
+        reSize: true
+        debounce: 100
+      }}
     >
       This is box
     </SolidCornerSmoothing>
@@ -77,11 +81,10 @@ pass the tag name as a string to the `wrapper` prop that will be used as the roo
 ```jsx
 return (
   <div>
-    <SolidCornerSmoothing 
-      class="box" 
-      wrapper="form" 
-      cornerRadius={60} 
-      cornerSmoothing={0.7}
+    <SolidCornerSmoothing
+      class="box"
+      wrapper="form"
+      options={{ cornerRadius: 60, cornerSmoothing: 0.8 }}
     >
       This is box
     </SolidCornerSmoothing>
@@ -106,13 +109,16 @@ const Btn = styled('button')`
 return (
   <div>
     <SolidCornerSmoothing
-      cornerRadius={30}
-      cornerSmoothing={0.8}
       wrapper={Btn}
-      backgroundColor="#ddd"
-      borderColor="tomato"
-      borderWidth={2}
-      preserveSmoothing
+      options={{
+        cornerRadius: 30,
+        cornerSmoothing: 0.8,
+        backgroundColor: '#ddd',
+        border {
+          color: "tomato",
+          size: 2
+        }
+      }}
     >
       This is button
     </SolidCornerSmoothing>
@@ -122,20 +128,25 @@ return (
 
 ![demo image](./preview//img2.png)
 
-### Use css with border
+### Use css
 
-You can also use css if you don't use color props
+Background color can be used via css or options props, border color can only be passed through options props. (the colors passed options props also accept css variables)
 
 ```jsx
 return (
   <div>
     <SolidCornerSmoothing
       class="box"
-      cornerRadius={30}
-      cornerSmoothing={0.8}
       wrapper="button"
-      borderWidth={2}
-      preserveSmoothing
+      options={{
+        cornerRadius: 30,
+        cornerSmoothing: 0.8,
+        preserveSmoothing:true
+        border: {
+          color:"red",
+          size: 2
+        }
+      }}
     >
       This is button
     </SolidCornerSmoothing>
@@ -150,50 +161,31 @@ return (
   align-items: center;
   width: 200px;
   height: 100px;
-  border: none;
   background-color: tomato;
-}
-
-/* backround color */
-.box [squircle='background'] {
-  fill: #ddd;
-}
-/* border color */
-.box [squircle='border'] {
-  fill: tomato;
-}
-```
-
-With scss
-
-```scss
-.box {
-  [squircle='background'] {
-    fill: #ddd;
-  }
-
-  [squircle='border'] {
-    fill: tomato;
-  }
 }
 ```
 
 ## Props
 
-| Prop name               | Type value             | Description                                                                                                                                                      |
-| ----------------------- | :--------------------- | :--------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| wrapper                 | string, Styled Element | Root tag (default is `div`), can also be a `solid-styled-components`                                                                                             |
-| cornerRadius            | number                 | Similar to the CSS property border-radius.                                                                                                                       |
-| topLeftCornerRadius     | number                 | Radius each corner                                                                                                                                               |
-| topRightCornerRadius    | number                 | Radius each corner                                                                                                                                               |
-| bottomRightCornerRadius | number                 | Radius each corner                                                                                                                                               |
-| bottomLeftCornerRadius  | number                 | Radius each corner                                                                                                                                               |
-| cornerSmoothing         | number                 | The degree of corner smoothing as a number in the range 0–1. 0 is equivalent to no smoothing and looks like normal border-radius. 1 indicates maximal smoothing. |
-| preserveSmoothing       | boolean                | Allow corner smoothing to work better on large rounded corners.                                                                                                  |
-| reSize                  | boolean                | Allows resizing and corners, (disabled by default to improve performance, can be used with the `deboune` prop)                                                   |
-| borderWidth             | number                 | When this prop has a value, it will turn into border mode (need to change the css according to the instructions or use prop `borderColor` and `backgroundColor`) |
-| borderColor             | string                 | Border color (can still use css if not using this prop)                                                                                                          |
-| backgroundColor         | string                 | Background color (can still use css if not using this prop)                                                                                                      |
-| cornerClass             | string                 | Use class name for element (class name will be auto generated by default)                                                                                        |
-| debounce                | number                 | (improved performance) delay the re-rendering of corners when doing a resize, radius and smoothing. (This prop only works when it comes with the `reSize` prop)  |
-| fitBorderWidth          | number                 | Add custom angle width parameter to fix visual effects                                                                                                           |
+| Prop name | Type value             | Description                                                          |
+| --------- | :--------------------- | :------------------------------------------------------------------- |
+| wrapper   | string, Styled Element | Root tag (default is `div`), can also be a `solid-styled-components` |
+| options   | Options                | Where to put options. (required to work)border-radius.               |
+
+### Options
+
+| Prop name               | Type value | Description                                                                                                                                                      |
+| ----------------------- | :--------- | :--------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| cornerRadius            | number     | Similar to the CSS property border-radius.                                                                                                                       |
+| topLeftCornerRadius     | number     | Radius each corner                                                                                                                                               |
+| topRightCornerRadius    | number     | Radius each corner                                                                                                                                               |
+| bottomRightCornerRadius | number     | Radius each corner                                                                                                                                               |
+| bottomLeftCornerRadius  | number     | Radius each corner                                                                                                                                               |
+| cornerSmoothing         | number     | The degree of corner smoothing as a number in the range 0–1. 0 is equivalent to no smoothing and looks like normal border-radius. 1 indicates maximal smoothing. |
+| preserveSmoothing       | boolean    | Allow corner smoothing to work better on large rounded corners.                                                                                                  |
+| reSize                  | boolean    | Allows resizing and corners, (disabled by default to improve performance, can be used with the `deboune` prop)                                                   |
+| border.size             | number     | When this prop has a value, it will turn into border mode (need to change the css according to the instructions or use prop `borderColor` and `backgroundColor`) |
+| border.color            | string     | Border color (can still use css if not using this prop)                                                                                                          |
+| backgroundColor         | string     | Background color (can still use css if not using this prop)                                                                                                      |
+| debounce                | number     | (improved performance) delay the re-rendering of corners when doing a resize, radius and smoothing. (This prop only works when it comes with the `reSize` prop)  |
+| fitBorderWidth          | number     | Add custom angle width parameter to fix visual effects                                                                                                           |

@@ -22,7 +22,11 @@ const getSize = (element: HTMLElement, borderWidth?: number): Size => {
 const getPositionProperty = (element: HTMLElement): CSS.Property.Position => {
   const currentPosition = getComputedStyle(element).position as CSS.Property.Position;
 
-  return currentPosition === 'static' ? 'relative' : currentPosition;
+  if (currentPosition === 'static' || (currentPosition as string) === '') {
+    return 'relative';
+  }
+
+  return currentPosition;
 };
 
 const setCssStyle = (id: string, rawCss: string[]): void => {
@@ -68,7 +72,7 @@ const createCss = (data: CreateCss): string => {
 };
 
 const getElementStyle = (id: string): HTMLElement | null => {
-  return document.querySelector('[' + attrs.style.name + '=' + id + ']');
+  return document.querySelector('[' + attrs.style.name + '=' + id.toString() + ']');
 };
 
 export { createCss, getElementStyle, getPositionProperty, getSize, setCssStyle };

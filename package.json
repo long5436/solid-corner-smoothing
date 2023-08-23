@@ -25,10 +25,10 @@
     "solid-corner",
     "solid-smooth"
   ],
-  "homepage": "https://github.com/nguyenvanlongweb/solid-corner-smoothing#readme",
+  "homepage": "https://github.com/longluuly/solid-corner-smoothing#readme",
   "repository": {
     "type": "git",
-    "url": "https://github.com/nguyenvanlongweb/solid-corner-smoothing"
+    "url": "https://github.com/longluuly/solid-corner-smoothing"
   },
   "publishConfig": {
     "access": "public"
@@ -40,17 +40,16 @@
     "@types/node": "^18.16.19",
     "@typescript-eslint/eslint-plugin": "^5.49.0",
     "@typescript-eslint/parser": "^5.49.0",
+    "csstype": "^3.1.2",
     "eslint": "^8.32.0",
     "figma-squircle": "^0.3.1",
-    "solid-start": "^0.3.1",
-    "solid-styled-components": "^0.28.5",
     "svgpath": "^2.6.0",
+    "terser": "^5.19.2",
     "tsup": "^7.2.0",
     "tsup-preset-solid": "^2.0.2",
     "typescript": "^4.9.5",
     "vite": "^4.4.6",
-    "vite-plugin-solid": "^2.7.0",
-    "csstype": "^3.1.2"
+    "vite-plugin-solid": "^2.7.0"
   },
   "module": "./dist/server.js",
   "browser": {

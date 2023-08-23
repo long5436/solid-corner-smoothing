@@ -2,7 +2,7 @@ import { Component, JSXElement, Show, createSignal, onMount, splitProps } from '
 import { Dynamic } from 'solid-js/web';
 import { Options } from '../type';
 import { attrs } from '../utils/domAttr';
-import { createUUID } from '../utils/svgPathMethods';
+import { createUUID } from '../utils/generalMethods';
 import CornerClient from './CornerClient';
 
 interface Props {
@@ -19,13 +19,13 @@ const SolidCornerSmoothing: Component<Props> = (props) => {
   const componentDefault = 'div';
   const [isClient, setIsClient] = createSignal<boolean>(false);
   const [parentRef, setParentRef] = createSignal<HTMLElement>();
+  const [parentCloneRef, setParentCloneRef] = createSignal<HTMLElement>();
   const [local, other] = splitProps(props, ['children', 'wrapper', 'class']);
-  const arrayClasses = {
-    contentClass: createUUID(),
-    // borderClass: createUUID(),
-  };
+  const randomId: string = createUUID();
   // eslint-disable-next-line prefer-const
   let componentRef: HTMLElement | null = null;
+  // eslint-disable-next-line prefer-const
+  let componentCloneRef: HTMLElement | null = null;
 
   onMount(() => {
     setParentRef(componentRef as unknown as HTMLElement);
@@ -33,22 +33,37 @@ const SolidCornerSmoothing: Component<Props> = (props) => {
   });
 
   const ContentComponent = () => {
+    onMount(() => {
+      setParentRef(componentRef as unknown as HTMLElement);
+      setParentCloneRef(componentCloneRef as unknown as HTMLElement);
+    });
     return (
       <>
         <Show when={isClient()}>
           <CornerClient
             {...other}
             parent={parentRef() as HTMLElement}
-            arrayClasses={arrayClasses}
+            parentClone={parentCloneRef() as HTMLElement}
+            randomId={randomId}
           />
         </Show>
+        <Show when={props.options?.border}>
+          <div
+            ref={componentCloneRef as unknown as HTMLDivElement}
+            class={props.class}
+            classList={props.classList}
+            {...{ [attrs.CloneContentement.name]: randomId }}
+          >
+            {local.children}
+          </div>
+        </Show>
         <Dynamic
-          // classList={{ /*[props.class as any]: !!props.class,*/ [arrayClasses.contentClass]: true }}
+          // classList={{ /*[props.class as any]: !!props.class,*/ [randomId]: true }}
           class={props.class}
           classList={props.classList}
           ref={componentRef as unknown as HTMLDivElement}
           component={local.wrapper || componentDefault}
-          {...{ [attrs.content.name]: arrayClasses.contentClass }}
+          {...{ [attrs.content.name]: randomId }}
         >
           {local.children}
         </Dynamic>
@@ -58,7 +73,7 @@ const SolidCornerSmoothing: Component<Props> = (props) => {
 
   return (
     <Show when={props?.options?.border} fallback={<ContentComponent />}>
-      <div {...{ [attrs.wrapperBorder.name]: arrayClasses.contentClass }}>
+      <div {...{ [attrs.wrapperBorder.name]: randomId }}>
         <ContentComponent />
       </div>
     </Show>

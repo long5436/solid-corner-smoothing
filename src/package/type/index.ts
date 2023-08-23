@@ -14,6 +14,13 @@ interface FigmaSquircleParams {
   preserveSmoothing?: boolean;
 }
 
+export type EachCornerEadius = {
+  topLeftCornerRadius?: number;
+  topRightCornerRadius?: number;
+  bottomRightCornerRadius?: number;
+  bottomLeftCornerRadius?: number;
+};
+
 export interface Props {
   children?: JSXElement;
   class?: string;
@@ -23,26 +30,28 @@ export interface Props {
   wrapper?: Component | string;
   options: Options;
   parent: HTMLElement;
-  arrayClasses: ArrayClasses;
+  parentClone: HTMLElement;
+  randomId: string;
 }
 
-type BorderOption = {
-  border?: {
-    size: number;
-    color: string;
-    fitBorderSize?: number;
-  };
+export type BorderOption = {
+  size: number;
+  color: string;
+  fitBorderSize?: number;
 };
 
-type OtherOption = {
+export type OtherOption = {
+  cornerSmoothing?: number;
   width?: number;
   height?: number;
   reSize?: boolean;
   debounce?: number;
   backgroundColor?: string;
+  border?: BorderOption;
 };
 
-export type Options = Omit<FigmaSquircleParams, 'height' | 'width'> & BorderOption & OtherOption;
+export type Options = Omit<FigmaSquircleParams, 'height' | 'width' | 'cornerSmoothing'> &
+  OtherOption;
 
 export type OptionsDefault = { cornerSmoothing: number; cornerRadius: number };
 
@@ -58,9 +67,12 @@ export type CreateCss = {
   properies: CSS.PropertiesHyphen;
 };
 
-export type ArrayClasses = {
-  contentClass: string;
-  // borderClass: string;
-};
+// export type ArrayClasses = {
+//   contentClass: string;
+//   // borderClass: string;
+// };
+
+export type CreateCorner = (v?: boolean) => void;
+export type TimeoutCallback = (func: CreateCorner) => void;
 
 export type { CSS, Component, FigmaSquircleParams, JSXElement };

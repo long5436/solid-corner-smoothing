@@ -18,6 +18,10 @@ const attrs = {
     name: globalName + 'style',
     camel: globalNameCamel + 'Style',
   },
+  CloneContentement: {
+    name: globalName + 'clone-content',
+    camel: globalNameCamel + 'CloneContent',
+  },
 };
 
 export { attrs };

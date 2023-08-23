@@ -6,7 +6,7 @@ index.html
 docs
 # dist
 preview
-
+example
 # local env files
 .env.local
 .env.*.local
@@ -35,5 +35,6 @@ vite.config.ts
 babel.config.cjs
 pnpm-lock.yaml
 tsconfig.json
+tsup.config.ts
 .npmignore
 .gitignore
