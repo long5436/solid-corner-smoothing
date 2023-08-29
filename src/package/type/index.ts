@@ -29,8 +29,8 @@ export interface Props {
   };
   wrapper?: Component | string;
   options: Options;
-  parent: HTMLElement;
-  parentClone: HTMLElement;
+  // parent: HTMLElement;
+  // parentClone: HTMLElement;
   randomId: string;
 }
 
@@ -67,12 +67,7 @@ export type CreateCss = {
   properies: CSS.PropertiesHyphen;
 };
 
-// export type ArrayClasses = {
-//   contentClass: string;
-//   // borderClass: string;
-// };
-
-export type CreateCorner = (v?: boolean) => void;
+export type CreateCorner = (skipCheck?: boolean) => void;
 export type TimeoutCallback = (func: CreateCorner) => void;
 
 export type { CSS, Component, FigmaSquircleParams, JSXElement };

@@ -35,9 +35,12 @@ export default defineConfig((config) => {
   const sd = preset.generateTsupOptions(parsed_data);
   sd.forEach((r) => {
     r.minify = 'terser';
-    r.noExternal = ['figma-squircle', 'svgpath'];
+    r.noExternal = ['figma-squircle', 'mz-svg'];
     r.minifyWhitespace = true;
     r.bundle = true;
+    r.clean = true;
+    r.minifySyntax = true;
+    r.minifyIdentifiers = true;
   });
   return sd;
 });

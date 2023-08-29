@@ -18,7 +18,7 @@ const attrs = {
     name: globalName + 'style',
     camel: globalNameCamel + 'Style',
   },
-  CloneContentement: {
+  cloneContentElement: {
     name: globalName + 'clone-content',
     camel: globalNameCamel + 'CloneContent',
   },

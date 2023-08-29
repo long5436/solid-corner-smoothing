@@ -23,7 +23,9 @@
     "radius",
     "border-radius",
     "solid-corner",
-    "solid-smooth"
+    "solid-smooth",
+    "solid-squircle",
+    "solid-start"
   ],
   "homepage": "https://github.com/longluuly/solid-corner-smoothing#readme",
   "repository": {
@@ -33,16 +35,17 @@
   "publishConfig": {
     "access": "public"
   },
-  "dependencies": {},
+  "dependencies": {
+    "solid-js": "^1.7.11"
+  },
   "devDependencies": {
-    "solid-js": "^1.7.11",
+    "mz-svg": "^1.0.10",
     "@types/node": "^18.16.19",
     "@typescript-eslint/eslint-plugin": "^5.49.0",
     "@typescript-eslint/parser": "^5.49.0",
     "csstype": "^3.1.2",
     "eslint": "^8.32.0",
     "figma-squircle": "^0.3.1",
-    "svgpath": "^2.6.0",
     "terser": "^5.19.2",
     "tsup": "^7.2.0",
     "tsup-preset-solid": "^2.0.2",

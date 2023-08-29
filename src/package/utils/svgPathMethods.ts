@@ -1,5 +1,5 @@
 import { getSvgPath } from 'figma-squircle';
-import svgpath from 'svgpath';
+import { minifyPath } from 'mz-svg';
 
 import type { EachCornerEadius, FigmaSquircleParams, OptionsDefault } from '../type';
 
@@ -7,13 +7,14 @@ const cornerDefault: OptionsDefault = { cornerSmoothing: 1, cornerRadius: 10 };
 
 const createPath = (options: FigmaSquircleParams, transform?: string) => {
   const rawPath: string = getSvgPath({ ...cornerDefault, ...options });
-  const path: string = svgpath(rawPath)
-    .rel()
-    .transform(transform || '')
-    .round(1)
-    .toString();
+  // const path: string = svgpath(rawPath)
+  //   .rel()
+  //   .transform(transform || '')
+  //   .round(1)
+  //   .toString();
 
-  return path;
+  const path = minifyPath(rawPath);
+  return path || '';
 };
 
 const fitBorderSize = (borderSize: number, fitBorderSize: number): number => {

@@ -1,4 +1,4 @@
-import { Component, Show, createEffect, createSignal, on, onCleanup, onMount } from 'solid-js';
+import { Component, createEffect, createSignal, on, onCleanup, onMount } from 'solid-js';
 import {
   BorderOption,
   CSS,
@@ -10,7 +10,8 @@ import {
   TimeoutCallback,
 } from '../type';
 import { attrs } from '../utils/domAttr';
-import { createCss, getElementStyle, getSize, setCssStyle } from '../utils/domMethods';
+// import { container, createCss, getElement, getSize, setCssStyle } from '../utils/domMethods';
+import DomMethods from '../utils/domMethods';
 import { calculateEachCornerEadius, createPath, fitBorderSize } from '../utils/svgPathMethods';
 
 const CornerClient: Component<Props> = (props) => {
@@ -22,6 +23,12 @@ const CornerClient: Component<Props> = (props) => {
   let timeoutDebounce: ReturnType<typeof setTimeout> | null = null;
   // eslint-disable-next-line prefer-const
   let oldSizeElment: Size = { width: 0, height: 0 };
+  // eslint-disable-next-line prefer-const
+  let contentElement: HTMLElement | null = null;
+  // eslint-disable-next-line prefer-const
+  let contentElementClone: HTMLElement | null = null;
+  // eslint-disable-next-line prefer-const
+  let domMethods: DomMethods | null = null;
 
   const createListCss = {
     cssContent: (pathSvg: string, elementCloneSize?: Size, borderOption?: BorderOption) => {
@@ -34,36 +41,34 @@ const CornerClient: Component<Props> = (props) => {
         propertiesWithBorder.width = elementCloneSize.width - borderOption.size * 2 + 'px';
         propertiesWithBorder.transform =
           'translate(' + borderOption?.size + 'px,' + borderOption?.size + 'px)';
+        // propertiesWithBorder['border-radius'] = 'unset !important';
+        // propertiesWithBorder.border = 'unset !important';
       }
 
       if (props.options?.backgroundColor) {
         propertiesWithBorder['background-color'] = props.options?.backgroundColor;
       }
 
-      return createCss({
+      return domMethods?.createCss({
         selector: '[' + attrs.content.name + '="' + props.randomId + '"]',
         properies: {
-          // 'border-radius': localFigmaSquircleOptions().cornerRadius + 'px',
           'clip-path': "path('" + pathSvg + "')",
           overflow: 'hidden',
-          // 'background-color': borderOption?.color,
-          // border: localFigmaSquircleOptions().border?.size + 'px solid transparent',
-          // padding: localFigmaSquircleOptions()?.border?.size + 'px',
           ...propertiesWithBorder,
         },
       });
     },
     cssBorderWrapper: () =>
-      createCss({
+      domMethods?.createCss({
         selector: '[' + attrs.wrapperBorder.name + '="' + props.randomId + '"]',
         properies: {
           position: 'relative', // getPositionProperty(props.parent as HTMLElement),
-          // padding: localFigmaSquircleOptions()?.border?.size + 'px',
           'box-sizing': 'border-box',
+          'border-width': 0 + ' !important',
         },
       }),
     cssBorder: (pathSvgBorder: string, borderColor: string) =>
-      createCss({
+      domMethods?.createCss({
         selector: '[' + attrs.border.name + '="' + props.randomId + '"]',
         properies: {
           position: 'absolute',
@@ -74,44 +79,50 @@ const CornerClient: Component<Props> = (props) => {
         },
       }),
     cssCloneContent: () =>
-      createCss({
-        selector: '[' + attrs.CloneContentement.name + '="' + props.randomId + '"]',
+      domMethods?.createCss({
+        selector: '[' + attrs.cloneContentElement.name + '="' + props.randomId + '"]',
         properies: {
-          // position: 'absolute',
           opacity: 0,
-          // inset: 0,
         },
       }),
   };
 
   const createCorner: CreateCorner = (skipCheck?: boolean): void => {
-    if (props.parent) {
-      // const sizeElement: Size = getSize(props.parent);
+    if (contentElement) {
       const borderOption: BorderOption | undefined = props.options?.border;
-      const checkEmement: Size = getSize(borderOption ? props.parentClone : props.parent); // the element being tracked changes size
+
+      // https://stackoverflow.com/questions/32438642/clientwidth-and-clientheight-report-zero-while-getboundingclientrect-is-correct
+      const checkEmementSize: Size = domMethods?.getSize(
+        domMethods?.getElement(
+          props.randomId,
+          borderOption ? attrs.cloneContentElement.name : attrs.content.name
+        ) as HTMLElement
+      ) as Size; // the element being tracked changes size
 
       if (
-        skipCheck ||
-        checkEmement.height !== oldSizeElment.height ||
-        checkEmement.width !== oldSizeElment.width
+        (skipCheck ||
+          checkEmementSize.height !== oldSizeElment.height ||
+          checkEmementSize.width !== oldSizeElment.width) &&
+        checkEmementSize.height !== 0 &&
+        checkEmementSize.width !== 0
       ) {
         // the function will be called twice so need to save the value to check if it is necessary to run the content in the function
-        oldSizeElment = checkEmement;
+        oldSizeElment = checkEmementSize;
 
         if (!borderOption) {
           const pathSvg = createPath({
-            ...checkEmement,
+            ...checkEmementSize,
             ...(localFigmaSquircleOptions() as FigmaSquircleParams),
           });
 
           // create style tag to head tag
-          setCssStyle(props.randomId, [createListCss.cssContent(pathSvg)]);
+          domMethods?.setCssStyle(props.randomId, [createListCss.cssContent(pathSvg)]);
         } else {
           const pathSvg = createPath({
             // ...sizeElement,
             ...(localFigmaSquircleOptions() as FigmaSquircleParams),
-            height: checkEmement.height - borderOption.size * 2,
-            width: checkEmement.width - borderOption.size * 2,
+            height: checkEmementSize.height - borderOption.size * 2,
+            width: checkEmementSize.width - borderOption.size * 2,
             cornerRadius: Number(localFigmaSquircleOptions().cornerRadius) - borderOption.size,
             ...calculateEachCornerEadius(
               borderOption.size,
@@ -128,15 +139,15 @@ const CornerClient: Component<Props> = (props) => {
           }
 
           const pathSvgBorder = createPath({
-            ...checkEmement,
+            ...checkEmementSize,
             ...(localFigmaSquircleOptions() as FigmaSquircleParams),
             cornerRadius: borderCornerRadius,
           });
 
           // create style tag to head tag
-          setCssStyle(props.randomId, [
+          domMethods?.setCssStyle(props.randomId, [
             createListCss.cssCloneContent(),
-            createListCss.cssContent(pathSvg, checkEmement, borderOption),
+            createListCss.cssContent(pathSvg, checkEmementSize, borderOption),
             createListCss.cssBorderWrapper(),
             createListCss.cssBorder(pathSvgBorder, borderOption.color),
           ]);
@@ -153,9 +164,9 @@ const CornerClient: Component<Props> = (props) => {
     // remove old resizeObserver before create new
     removeObserver();
     // create new
+
     resizeObserver = new ResizeObserver(() => {
       // createCorner(skipCheck);
-
       if (timeoutCallback) {
         timeoutCallback(createCorner);
       } else {
@@ -188,7 +199,8 @@ const CornerClient: Component<Props> = (props) => {
     //   }
     // }
 
-    if (props.parent) {
+    // if (props.parent) {
+    if (contentElement) {
       if (props.options?.reSize) {
         if (props.options?.debounce) {
           createResizeObserver(skipCheck, (callback: CreateCorner) => {
@@ -200,10 +212,28 @@ const CornerClient: Component<Props> = (props) => {
         } else {
           createResizeObserver(skipCheck);
         }
-        resizeObserver?.observe(props.options?.border ? props.parentClone : props.parent);
+
+        addObserve();
       } else {
         createCorner(skipCheck);
       }
+    }
+  };
+
+  const addObserve = (): void => {
+    /* 
+    Needs to get the element directly so it can get its size, but cannot pre-assign to a variable. This only happens when using pre-rendering (SSR), see link below for details
+
+    https://stackoverflow.com/questions/32438642/clientwidth-and-clientheight-report-zero-while-getboundingclientrect-is-correct
+
+    */
+    const el = domMethods?.getElement(
+      props.randomId,
+      props.options?.border ? attrs.cloneContentElement.name : attrs.content.name
+    ) as HTMLElement;
+
+    if (el) {
+      resizeObserver?.observe(el);
     }
   };
 
@@ -216,7 +246,7 @@ const CornerClient: Component<Props> = (props) => {
 
   // call cleanup when component unmout
   const clean = (): void => {
-    const el = getElementStyle(props.randomId);
+    const el = domMethods?.getElement(props.randomId);
 
     if (el) el.remove();
     removeObserver();
@@ -245,43 +275,31 @@ const CornerClient: Component<Props> = (props) => {
   );
 
   onMount(() => {
-    // create attr unique id
-    // props.parent.dataset.solidCornerContent = attrId;
+    // Test
+    domMethods = new DomMethods(document);
+
+    // This is currently only for the purpose of checking if the content exists or not
+    contentElement = domMethods.getElement(props.randomId, attrs.content.name);
 
     // create style tag to head tag
-    setCssStyle(props.randomId, [createListCss.cssBorderWrapper()]);
-
-    // resizeObserver = new ResizeObserver(() => {
-    //   createCorner();
-    //   removeObserver();
-
-    //   if (props.options?.reSize) {
-    //     watchDomResize();
-    //   }
-    // });
+    domMethods.setCssStyle(props.randomId, [createListCss.cssBorderWrapper()]);
 
     createResizeObserver(true, null, () => {
-      // removeObserver();
-
       if (props.options?.reSize) {
         watchDomResize();
+      } else {
+        removeObserver();
       }
     });
 
-    resizeObserver?.observe(props.options?.border ? props.parentClone : props.parent);
+    addObserve();
   });
 
   onCleanup(() => {
     clean();
   });
 
-  return (
-    <>
-      <Show when={!!localFigmaSquircleOptions().border}>
-        <span {...{ [attrs.border.name]: props.randomId }} />
-      </Show>
-    </>
-  );
+  return <></>;
 };
 
 export default CornerClient;

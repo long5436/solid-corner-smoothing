@@ -1,78 +1,94 @@
 import { CSS, CreateCss, Size } from '../type';
 import { attrs } from './domAttr';
 
-const getSize = (element: HTMLElement, borderWidth?: number): Size => {
-  if (element) {
-    const { width, height }: Size = {
-      width: element.clientWidth,
-      height: element.clientHeight,
-    };
+class DomMethods {
+  container: Document;
 
-    const resultBorderWidth: number = borderWidth ? borderWidth * 2 : 0;
-
-    return {
-      width: width - resultBorderWidth,
-      height: height - resultBorderWidth,
-    };
+  constructor(container: Document) {
+    this.container = container;
   }
 
-  return { width: 0, height: 0 };
-};
+  getSize(element: HTMLElement, borderWidth?: number): Size {
+    if (element) {
+      const { width, height }: Size = {
+        width: element.clientWidth,
+        height: element.clientHeight,
+      };
 
-const getPositionProperty = (element: HTMLElement): CSS.Property.Position => {
-  const currentPosition = getComputedStyle(element).position as CSS.Property.Position;
+      const resultBorderWidth: number = borderWidth ? borderWidth * 2 : 0;
 
-  if (currentPosition === 'static' || (currentPosition as string) === '') {
-    return 'relative';
+      return {
+        width: width - resultBorderWidth,
+        height: height - resultBorderWidth,
+      };
+    }
+
+    return { width: 0, height: 0 };
   }
 
-  return currentPosition;
-};
+  getPositionProperty(element: HTMLElement): CSS.Property.Position {
+    const currentPosition = getComputedStyle(element).position as CSS.Property.Position;
 
-const setCssStyle = (id: string, rawCss: string[]): void => {
-  let styleTag: HTMLElement | null = getElementStyle(id);
-  const check = !!styleTag;
+    if (currentPosition === 'static' || (currentPosition as string) === '') {
+      return 'relative';
+    }
 
-  if (!styleTag) {
-    styleTag = document.createElement('style');
-    styleTag.setAttribute('type', 'text/css');
-    styleTag.dataset[attrs.style.camel] = id;
+    return currentPosition;
   }
 
-  styleTag.innerHTML = rawCss.reduce((prev: string, e: string) => prev + e, '');
+  setCssStyle(id: string, rawCss: (string | undefined)[]): void {
+    let styleTag: HTMLElement | null = this.getElement(id);
+    const check = !!styleTag;
 
-  if (!check) {
-    document.head.appendChild(styleTag);
-  }
-};
+    if (this.container) {
+      if (!styleTag) {
+        styleTag = this.container?.createElement('style');
+        styleTag.setAttribute('type', 'text/css');
+        styleTag.dataset[attrs.style.camel] = id;
+      }
 
-const createCss = (data: CreateCss): string => {
-  let properiesString = '';
-  let cssNamme = '';
+      styleTag.innerHTML = rawCss.reduce((prev, current) => {
+        if (current) {
+          return prev + current;
+        }
+      }, '') as string;
 
-  for (const key in data.properies) {
-    data.properies as string;
-
-    if (Object.prototype.hasOwnProperty.call(data.properies, key)) {
-      if ((data.properies as string)[key as any] !== undefined || null) {
-        properiesString += key + ':' + (data.properies as string)[key as any] + ';';
+      if (!check) {
+        this.container?.head.appendChild(styleTag);
       }
     }
   }
 
-  if (data.id) {
-    cssNamme = '#' + data.id;
-  } else if (data.class) {
-    cssNamme = '.' + data.class;
-  } else {
-    cssNamme = data.selector || '';
+  createCss(data: CreateCss): string {
+    let properiesString = '';
+    let cssNamme = '';
+
+    for (const key in data.properies) {
+      data.properies as string;
+
+      if (Object.prototype.hasOwnProperty.call(data.properies, key)) {
+        if ((data.properies as string)[key as any] !== undefined || null) {
+          properiesString += key + ':' + (data.properies as string)[key as any] + ';';
+        }
+      }
+    }
+
+    if (data.id) {
+      cssNamme = '#' + data.id;
+    } else if (data.class) {
+      cssNamme = '.' + data.class;
+    } else {
+      cssNamme = data.selector || '';
+    }
+
+    return (cssNamme + '{' + properiesString + '}') as string;
   }
 
-  return (cssNamme + '{' + properiesString + '}') as string;
-};
+  getElement(id: string, name?: string): HTMLElement | null {
+    return this.container?.querySelector(
+      '[' + name || attrs.style.name + '=' + id.toString() + ']'
+    );
+  }
+}
 
-const getElementStyle = (id: string): HTMLElement | null => {
-  return document.querySelector('[' + attrs.style.name + '=' + id.toString() + ']');
-};
-
-export { createCss, getElementStyle, getPositionProperty, getSize, setCssStyle };
+export default DomMethods;
