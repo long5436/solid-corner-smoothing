@@ -1,10 +1,9 @@
-import { Component, createEffect, createSignal, on, onCleanup, onMount } from 'solid-js';
+import { Component, createEffect, createMemo, on, onCleanup, onMount } from 'solid-js';
 import {
   BorderOption,
   CSS,
   CreateCorner,
   FigmaSquircleParams,
-  Options,
   Props,
   Size,
   TimeoutCallback,
@@ -15,7 +14,7 @@ import DomMethods from '../utils/domMethods';
 import { calculateEachCornerEadius, createPath, fitBorderSize } from '../utils/svgPathMethods';
 
 const CornerClient: Component<Props> = (props) => {
-  const [localFigmaSquircleOptions, setLocalFigmaSquircleOptions] = createSignal<Options>({});
+  // const [localFigmaSquircleOptions, setLocalFigmaSquircleOptions] = createSignal<Options>({});
 
   // eslint-disable-next-line prefer-const
   let resizeObserver: ResizeObserver | null = null;
@@ -26,9 +25,13 @@ const CornerClient: Component<Props> = (props) => {
   // eslint-disable-next-line prefer-const
   let contentElement: HTMLElement | null = null;
   // eslint-disable-next-line prefer-const
-  let contentElementClone: HTMLElement | null = null;
-  // eslint-disable-next-line prefer-const
   let domMethods: DomMethods | null = null;
+
+  const localFigmaSquircleOptions = createMemo(() => {
+    const obj = props.options;
+    // obj.preserveSmoothing = props.options?.preserveSmoothing || true;
+    return obj;
+  });
 
   const createListCss = {
     cssContent: (pathSvg: string, elementCloneSize?: Size, borderOption?: BorderOption) => {
@@ -88,6 +91,7 @@ const CornerClient: Component<Props> = (props) => {
   };
 
   const createCorner: CreateCorner = (skipCheck?: boolean): void => {
+    console.log(props.randomId);
     if (contentElement) {
       const borderOption: BorderOption | undefined = props.options?.border;
 
@@ -100,11 +104,11 @@ const CornerClient: Component<Props> = (props) => {
       ) as Size; // the element being tracked changes size
 
       if (
-        (skipCheck ||
-          checkEmementSize.height !== oldSizeElment.height ||
-          checkEmementSize.width !== oldSizeElment.width) &&
-        checkEmementSize.height !== 0 &&
-        checkEmementSize.width !== 0
+        skipCheck ||
+        checkEmementSize.height !== oldSizeElment.height ||
+        (checkEmementSize.width !== oldSizeElment.width &&
+          checkEmementSize.height !== 0 &&
+          checkEmementSize.width !== 0)
       ) {
         // the function will be called twice so need to save the value to check if it is necessary to run the content in the function
         oldSizeElment = checkEmementSize;
@@ -167,6 +171,8 @@ const CornerClient: Component<Props> = (props) => {
 
     resizeObserver = new ResizeObserver(() => {
       // createCorner(skipCheck);
+      console.log('da vao daay');
+
       if (timeoutCallback) {
         timeoutCallback(createCorner);
       } else {
@@ -232,6 +238,15 @@ const CornerClient: Component<Props> = (props) => {
       props.options?.border ? attrs.cloneContentElement.name : attrs.content.name
     ) as HTMLElement;
 
+    // if (!el) {
+    //   el = (
+    //     props.options?.border ? props.componentRefs.contentClone : props.componentRefs.content
+    //   ) as HTMLElement;
+    // }
+
+    console.log({ el });
+    // console.log(props.componentRefs);
+
     if (el) {
       resizeObserver?.observe(el);
     }
@@ -252,12 +267,16 @@ const CornerClient: Component<Props> = (props) => {
     removeObserver();
   };
 
-  createEffect(() => {
-    setLocalFigmaSquircleOptions({
-      ...props.options,
-      preserveSmoothing: props.options?.preserveSmoothing || true,
-    });
-  });
+  // createEffect(() => {
+  //   const newObj = Object.assign(props.options);
+
+  //   console.log({ newObj });
+
+  //   setLocalFigmaSquircleOptions({
+  //     ...newObj,
+  //     preserveSmoothing: props.options?.preserveSmoothing || true,
+  //   });
+  // });
 
   createEffect(
     on(
@@ -274,14 +293,18 @@ const CornerClient: Component<Props> = (props) => {
     )
   );
 
+  createEffect(() => {
+    console.log({ props });
+  });
+
   onMount(() => {
-    // Test
+    // Create domMethods with document
     domMethods = new DomMethods(document);
 
     // This is currently only for the purpose of checking if the content exists or not
     contentElement = domMethods.getElement(props.randomId, attrs.content.name);
 
-    // create style tag to head tag
+    // Create style tag to head tag
     domMethods.setCssStyle(props.randomId, [createListCss.cssBorderWrapper()]);
 
     createResizeObserver(true, null, () => {
@@ -289,6 +312,7 @@ const CornerClient: Component<Props> = (props) => {
         watchDomResize();
       } else {
         removeObserver();
+        watchDomResize();
       }
     });
 

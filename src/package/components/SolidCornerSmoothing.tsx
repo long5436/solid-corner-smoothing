@@ -18,11 +18,15 @@ interface PropsContent {
 }
 
 const componentDefault = 'div';
-const componentRef: { value: HTMLElement | null } = { value: null };
-const randomId = createUUID();
+// const componentRefs: ComponentRefs = {
+//   content: null,
+//   contentClone: null,
+// };
+// const randomId = createUUID();
 
 const SolidCornerSmoothing: Component<Props> = (props) => {
   const [isClient, setIsClient] = createSignal<boolean>(false);
+  const [randomId] = createSignal<string>(createUUID());
 
   onMount(() => {
     if (!isClient()) {
@@ -33,10 +37,11 @@ const SolidCornerSmoothing: Component<Props> = (props) => {
   const ContentComponent: Component<Props & PropsContent> = (props) => {
     return (
       <Dynamic
+        // ref={(props?.clone ? componentRefs.contentClone : componentRefs.content) as HTMLElement}
         class={props?.class}
         classList={props?.classList}
         component={props?.wrapper || componentDefault}
-        {...{ [props?.clone ? attrs.cloneContentElement.name : attrs.content.name]: randomId }}
+        {...{ [props?.clone ? attrs.cloneContentElement.name : attrs.content.name]: randomId() }}
         style={
           !isClient()
             ? props?.clone
@@ -59,15 +64,26 @@ const SolidCornerSmoothing: Component<Props> = (props) => {
 
   return (
     <>
-      <CornerClient options={props?.options} randomId={randomId} />
       {props.options?.border ? (
-        <Dynamic component="div" {...{ [attrs.wrapperBorder.name]: randomId }}>
-          <Dynamic component="span" {...{ [attrs.border.name]: isClient() ? randomId : '' }} />
+        <Dynamic component="div" {...{ [attrs.wrapperBorder.name]: randomId() }}>
+          <Dynamic component="span" {...{ [attrs.border.name]: isClient() ? randomId() : '' }} />
           <ContentComponent {...props} clone={true} />
           <ContentComponent {...props} />
+          <CornerClient
+            options={props?.options}
+            randomId={randomId()}
+            // componentRefs={componentRefs}
+          />
         </Dynamic>
       ) : (
-        <ContentComponent {...props} />
+        <>
+          <ContentComponent {...props} />
+          <CornerClient
+            options={props?.options}
+            randomId={randomId()}
+            // componentRefs={componentRefs}
+          />
+        </>
       )}
     </>
   );

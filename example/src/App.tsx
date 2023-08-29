@@ -1,4 +1,4 @@
-import SolidCornerSmoothing, { Options } from 'lib';
+import SolidCornerSmoothing, { Options } from '../../src/package';
 // import { Options } from 'lib';
 import { createSignal, type Component } from 'solid-js';
 import image from './assets/image.jpg';
@@ -36,9 +36,7 @@ const App: Component = () => {
                       'border-radius': options().cornerRadius + 'px',
 
                       border: options().border
-                        ? options().border?.size +
-                          'px solid ' +
-                          options().border?.color
+                        ? options().border?.size + 'px solid ' + options().border?.color
                         : 'none',
                     }}
                   >
@@ -57,21 +55,17 @@ const App: Component = () => {
               <div class="resize">
                 <h3>
                   Resize div (
-                  {options().reSize + '' !== 'undefined'
-                    ? options().reSize + ''
-                    : 'false'}
-                  )
+                  {options().reSize + '' !== 'undefined' ? options().reSize + '' : 'false'})
                 </h3>
                 <p>
-                  This element represents resizing when the window resizes or
-                  the element itself resizes
+                  This element represents resizing when the window resizes or the element itself
+                  resizes
                 </p>
                 <SolidCornerSmoothing class="box2" options={options()}>
                   <h2>
-                    Lorem ipsum dolor sit amet consectetur adipisicing elit.
-                    Iste quia consequatur maxime magni amet repudiandae iusto
-                    inventore facere nostrum provident, hic rerum perspiciatis
-                    quibusdam, deserunt tenetur ad cupiditate, eligendi
+                    Lorem ipsum dolor sit amet consectetur adipisicing elit. Iste quia consequatur
+                    maxime magni amet repudiandae iusto inventore facere nostrum provident, hic
+                    rerum perspiciatis quibusdam, deserunt tenetur ad cupiditate, eligendi
                     doloribus!
                   </h2>
                 </SolidCornerSmoothing>

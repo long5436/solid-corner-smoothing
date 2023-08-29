@@ -5,9 +5,6 @@ settings:
   excludeLinksFromLockfile: false
 
 dependencies:
-  mz-svg:
-    specifier: ^1.0.10
-    version: 1.0.10
   solid-js:
     specifier: ^1.7.11
     version: 1.7.11
@@ -31,9 +28,9 @@ devDependencies:
   figma-squircle:
     specifier: ^0.3.1
     version: 0.3.1
-  svgpath:
-    specifier: ^2.6.0
-    version: 2.6.0
+  mz-svg:
+    specifier: ^1.0.10
+    version: 1.0.10
   terser:
     specifier: ^5.19.2
     version: 5.19.2
@@ -1925,13 +1922,13 @@ packages:
 
   /mz-math@3.0.17:
     resolution: {integrity: sha512-pJLQupXhnP3acKj8gRBbk9v2NXM6dLbdkbcUImYkUPX7HKo/trG/CbBA0XS8u8RNQLRtw5QTs/9W2Whw63v0aw==}
-    dev: false
+    dev: true
 
   /mz-svg@1.0.10:
     resolution: {integrity: sha512-PcRCAG262bRr1Tp0M1wGUnhiHsFX90WBHykPbqU8lEJCauAPZ/z7AYO6F0EDfFA2SksRKz9EjIBvyzM4fxLSNw==}
     dependencies:
       mz-math: 3.0.17
-    dev: false
+    dev: true
 
   /mz@2.7.0:
     resolution: {integrity: sha512-z81GNO7nnYMEhrGh9LeymoE4+Yr0Wn5McHIZMK5cfQCl+NDX08sCZgUc9/6MHni9IWuFLm1Z3HTCXu2z9fN62Q==}
@@ -2260,10 +2257,6 @@ packages:
     engines: {node: '>=8'}
     dependencies:
       has-flag: 4.0.0
-    dev: true
-
-  /svgpath@2.6.0:
-    resolution: {integrity: sha512-OIWR6bKzXvdXYyO4DK/UWa1VA1JeKq8E+0ug2DG98Y/vOmMpfZNj+TIG988HjfYSqtcy/hFOtZq/n/j5GSESNg==}
     dev: true
 
   /terser@5.19.2:

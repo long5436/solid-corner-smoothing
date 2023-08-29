@@ -32,6 +32,7 @@ export interface Props {
   // parent: HTMLElement;
   // parentClone: HTMLElement;
   randomId: string;
+  // componentRefs: ComponentRefs;
 }
 
 export type BorderOption = {
@@ -65,6 +66,11 @@ export type CreateCss = {
   id?: string;
   selector?: string;
   properies: CSS.PropertiesHyphen;
+};
+
+export type ComponentRefs = {
+  content: HTMLElement | null;
+  contentClone: HTMLElement | null;
 };
 
 export type CreateCorner = (skipCheck?: boolean) => void;

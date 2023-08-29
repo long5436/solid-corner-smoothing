@@ -42,7 +42,7 @@ class DomMethods {
 
     if (this.container) {
       if (!styleTag) {
-        styleTag = this.container?.createElement('style');
+        styleTag = this.container.createElement('style');
         styleTag.setAttribute('type', 'text/css');
         styleTag.dataset[attrs.style.camel] = id;
       }
@@ -54,7 +54,7 @@ class DomMethods {
       }, '') as string;
 
       if (!check) {
-        this.container?.head.appendChild(styleTag);
+        this.container.head.appendChild(styleTag);
       }
     }
   }
@@ -85,9 +85,8 @@ class DomMethods {
   }
 
   getElement(id: string, name?: string): HTMLElement | null {
-    return this.container?.querySelector(
-      '[' + name || attrs.style.name + '=' + id.toString() + ']'
-    );
+    const attrName = name || attrs.style.name;
+    return this.container?.querySelector('[' + attrName + '=' + id.toString() + ']');
   }
 }
 
