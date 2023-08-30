@@ -42,7 +42,7 @@ const App: Component = () => {
                   >
                     <img src={image} alt="" />
                   </div>
-                  <h3>Origin radius</h3>
+                  <h3>Default radius</h3>
                 </div>
                 <div class="content">
                   <SolidCornerSmoothing class="box" options={options()}>

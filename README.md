@@ -9,6 +9,9 @@ From version 0.2.0 will support solid-start and the documentation has been chang
 ![demo image](./preview//img1.png)
 ![demo image](./preview//img2.png)
 
+![demo image](./preview//img4.png)
+![demo image](./preview//img3.png)
+
 ## Installation
 
 ```bash sh
@@ -38,7 +41,7 @@ const App = () => {
           cornerSmoothing: 0.8,
           reSize: true,
           debounce: 100,
-          preserveSmoothing: true, // default = true
+          preserveSmoothing: true,
         }}
       >
         This is box
@@ -189,7 +192,7 @@ return (
 | preserveSmoothing       | boolean    | Allow corner smoothing to work better on large rounded corners.                                                                                                  |
 | reSize                  | boolean    | Allows resizing and corners, (disabled by default to improve performance, can be used with the `deboune` prop)                                                   |
 | border.size             | number     | When this prop has a value, it will turn into border mode (need to change the css according to the instructions or use prop `borderColor` and `backgroundColor`) |
-| border.color            | string     | Border color (can still use css if not using this prop)                                                                                                          |
+| border.color            | string     | Border color                                                                                                                                                     |
 | backgroundColor         | string     | Background color (can still use css if not using this prop)                                                                                                      |
 | debounce                | number     | (improved performance) delay the re-rendering of corners when doing a resize, radius and smoothing. (This prop only works when it comes with the `reSize` prop)  |
 | fitBorderWidth          | number     | Add custom angle width parameter to fix visual effects                                                                                                           |

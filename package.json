@@ -35,10 +35,9 @@
   "publishConfig": {
     "access": "public"
   },
-  "dependencies": {
-    "solid-js": "^1.7.11"
-  },
+  "dependencies": {},
   "devDependencies": {
+    "solid-js": "^1.7.11",
     "mz-svg": "^1.0.10",
     "@types/node": "^18.16.19",
     "@typescript-eslint/eslint-plugin": "^5.49.0",
