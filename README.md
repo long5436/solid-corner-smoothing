@@ -1,6 +1,6 @@
 # Solid corner smoothing
 
-This is a component package used to create smooth curved corners for solidJS, if you use react there is a similar package ([https://www.npmjs.com/package/corner-smoothing](https://www.npmjs.com/package/corner-smoothing)). You can use it easily for basic tags or a solid-styled-components.
+This is a component package used to create smooth curved corners for solidJS. You can use it easily for basic tags or a solid-styled-components.
 
 From version 0.2.0 will support solid-start and the documentation has been changed
 
