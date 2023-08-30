@@ -86,7 +86,7 @@ class DomMethods {
 
   getElement(id: string, name?: string): HTMLElement | null {
     const attrName = name || attrs.style.name;
-    return this.container?.querySelector('[' + attrName + '=' + id.toString() + ']');
+    return this.container.querySelector('[' + attrName + '=' + id.toString() + ']');
   }
 }
 

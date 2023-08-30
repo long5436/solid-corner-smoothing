@@ -1,4 +1,4 @@
-import { Component, JSXElement, createSignal, onMount } from 'solid-js';
+import { Component, JSXElement, Show, createSignal, onMount } from 'solid-js';
 import { Dynamic } from 'solid-js/web';
 import { Options } from '../type';
 import { attrs } from '../utils/domAttr';
@@ -37,7 +37,6 @@ const SolidCornerSmoothing: Component<Props> = (props) => {
   const ContentComponent: Component<Props & PropsContent> = (props) => {
     return (
       <Dynamic
-        // ref={(props?.clone ? componentRefs.contentClone : componentRefs.content) as HTMLElement}
         class={props?.class}
         classList={props?.classList}
         component={props?.wrapper || componentDefault}
@@ -58,6 +57,9 @@ const SolidCornerSmoothing: Component<Props> = (props) => {
         }
       >
         {props.children}
+        <Show when={!props?.clone}>
+          <CornerClient options={props?.options} randomId={randomId()} />
+        </Show>
       </Dynamic>
     );
   };
@@ -69,20 +71,10 @@ const SolidCornerSmoothing: Component<Props> = (props) => {
           <Dynamic component="span" {...{ [attrs.border.name]: isClient() ? randomId() : '' }} />
           <ContentComponent {...props} clone={true} />
           <ContentComponent {...props} />
-          <CornerClient
-            options={props?.options}
-            randomId={randomId()}
-            // componentRefs={componentRefs}
-          />
         </Dynamic>
       ) : (
         <>
           <ContentComponent {...props} />
-          <CornerClient
-            options={props?.options}
-            randomId={randomId()}
-            // componentRefs={componentRefs}
-          />
         </>
       )}
     </>

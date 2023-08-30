@@ -1,6 +1,6 @@
-import SolidCornerSmoothing, { Options } from '../../src/package';
-// import { Options } from 'lib';
+import SolidCornerSmoothing, { Options } from 'lib';
 import { createSignal, type Component } from 'solid-js';
+// import SolidCornerSmoothing, { Options } from '../../dist';
 import image from './assets/image.jpg';
 import Code from './components/Code';
 import Control from './components/Control';
@@ -17,6 +17,7 @@ const App: Component = () => {
     // data.bottomRightCornerRadius = 42;
     // data.topLeftCornerRadius = 24;
     // data.topRightCornerRadius = 12;
+
     setOptions(data);
   };
 
@@ -48,6 +49,7 @@ const App: Component = () => {
                   <SolidCornerSmoothing class="box" options={options()}>
                     <img src={image} alt="" />
                   </SolidCornerSmoothing>
+
                   <h3>Smooth radius</h3>
                 </div>
               </div>

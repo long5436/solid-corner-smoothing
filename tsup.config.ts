@@ -36,6 +36,7 @@ export default defineConfig((config) => {
   sd.forEach((r) => {
     r.minify = 'terser';
     r.noExternal = ['figma-squircle', 'mz-svg'];
+    r.external = ['solid-js'];
     r.minifyWhitespace = true;
     r.bundle = true;
     r.clean = true;

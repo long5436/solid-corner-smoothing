@@ -28,9 +28,7 @@ const CornerClient: Component<Props> = (props) => {
   let domMethods: DomMethods | null = null;
 
   const localFigmaSquircleOptions = createMemo(() => {
-    const obj = props.options;
-    // obj.preserveSmoothing = props.options?.preserveSmoothing || true;
-    return obj;
+    return props.options;
   });
 
   const createListCss = {
@@ -91,7 +89,6 @@ const CornerClient: Component<Props> = (props) => {
   };
 
   const createCorner: CreateCorner = (skipCheck?: boolean): void => {
-    console.log(props.randomId);
     if (contentElement) {
       const borderOption: BorderOption | undefined = props.options?.border;
 
@@ -171,8 +168,6 @@ const CornerClient: Component<Props> = (props) => {
 
     resizeObserver = new ResizeObserver(() => {
       // createCorner(skipCheck);
-      console.log('da vao daay');
-
       if (timeoutCallback) {
         timeoutCallback(createCorner);
       } else {
@@ -233,19 +228,11 @@ const CornerClient: Component<Props> = (props) => {
     https://stackoverflow.com/questions/32438642/clientwidth-and-clientheight-report-zero-while-getboundingclientrect-is-correct
 
     */
+
     const el = domMethods?.getElement(
       props.randomId,
       props.options?.border ? attrs.cloneContentElement.name : attrs.content.name
     ) as HTMLElement;
-
-    // if (!el) {
-    //   el = (
-    //     props.options?.border ? props.componentRefs.contentClone : props.componentRefs.content
-    //   ) as HTMLElement;
-    // }
-
-    console.log({ el });
-    // console.log(props.componentRefs);
 
     if (el) {
       resizeObserver?.observe(el);
@@ -292,10 +279,6 @@ const CornerClient: Component<Props> = (props) => {
       { defer: true }
     )
   );
-
-  createEffect(() => {
-    console.log({ props });
-  });
 
   onMount(() => {
     // Create domMethods with document
