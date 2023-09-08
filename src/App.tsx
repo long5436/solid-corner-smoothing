@@ -7,6 +7,8 @@ const App: Component = () => {
     <div>
       <SolidCornerSmoothing
         class="box"
+        src="https://source.unsplash.com/featured/300x201"
+        wrapper="img"
         options={{
           cornerRadius: 40,
           cornerSmoothing: 0.8,

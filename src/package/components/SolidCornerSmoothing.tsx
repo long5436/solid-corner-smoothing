@@ -1,4 +1,4 @@
-import { Component, JSXElement, Show, createSignal, onMount } from 'solid-js';
+import { Component, JSXElement, Show, createSignal, onMount, splitProps } from 'solid-js';
 import { Dynamic } from 'solid-js/web';
 import { Options } from '../type';
 import { attrs } from '../utils/domAttr';
@@ -11,6 +11,7 @@ interface Props {
   classList?: { [k: string]: boolean };
   wrapper?: Component | string;
   options: Options;
+  [other: string]: any;
 }
 
 interface PropsContent {
@@ -35,30 +36,35 @@ const SolidCornerSmoothing: Component<Props> = (props) => {
   });
 
   const ContentComponent: Component<Props & PropsContent> = (props) => {
+    const [localProps, otherProps] = splitProps(props, ['clone', 'wrapper', 'options', 'children']);
+
     return (
       <Dynamic
-        class={props?.class}
-        classList={props?.classList}
-        component={props?.wrapper || componentDefault}
+        // class={props?.class}
+        // classList={props?.classList}
+        {...otherProps}
+        component={localProps?.wrapper || componentDefault}
         {...{ [props?.clone ? attrs.cloneContentElement.name : attrs.content.name]: randomId() }}
         style={
           !isClient()
-            ? props?.clone
+            ? localProps?.clone
               ? {
                   position: 'absolute',
                   opacity: 0,
                 }
               : {
-                  'border-radius': props.options?.cornerRadius + 'px',
+                  'border-radius': localProps.options?.cornerRadius + 'px',
                   border:
-                    props?.options?.border?.size + 'px solid ' + props?.options?.border?.color,
+                    localProps?.options?.border?.size +
+                    'px solid ' +
+                    localProps?.options?.border?.color,
                 }
             : {}
         }
       >
-        {props.children}
-        <Show when={!props?.clone}>
-          <CornerClient options={props?.options} randomId={randomId()} />
+        {localProps.children}
+        <Show when={!localProps?.clone}>
+          <CornerClient options={localProps?.options} randomId={randomId()} />
         </Show>
       </Dynamic>
     );
