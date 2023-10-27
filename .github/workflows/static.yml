@@ -31,14 +31,14 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v3
-      - run: curl -fsSL https://get.pnpm.io/install.sh | sh -
-      - run: pnpm install 18
-      - run: pnpm use 18
-      - run: pnpm i
-      - run: pnpm run build
+      - run: curl -fsSL https://fnm.vercel.app/install | bash
+      - run: fnm install 18
+      - run: fnm use 18
+      - run: npm i
+      - run: npm run build
       - run: cd ./example
-      - run: pnpm i
-      - run: pnpm run build
+      - run: npm i
+      - run: npm run build
       - name: Setup Pages
         uses: actions/configure-pages@v3
       - name: Upload artifact
