@@ -31,11 +31,9 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v3
-      - run: curl -fsSL https://fnm.vercel.app/install | bash
-      - run: export PATH="/home/runner/.local/share/fnm:$PATH"
-      - run: source ~/.bashrc
-      - run: fnm install 18
-      - run: fnm use 18
+      - uses: actions/setup-node@v3
+        with:
+          node-version: 18
       - run: npm i
       - run: npm run build
       - run: cd ./example
