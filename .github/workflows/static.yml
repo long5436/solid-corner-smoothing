@@ -36,10 +36,10 @@ jobs:
           node-version: 18
       - run: npm i
       - run: npm run build
-      - run: cd ./example
-      - run: npm i
-      - run: npm run build
-      - run: ls -l
+      - run: |
+          cd ./example 
+          npm i
+          npm run build
       - name: Setup Pages
         uses: actions/configure-pages@v3
       - name: Upload artifact
@@ -54,6 +54,9 @@ jobs:
     name: Build lib
     runs-on: ubuntu-latest
     steps:
+      - uses: actions/setup-node@v3
+        with:
+          node-version: 18
       - run: npm i
       - run: npm run build
       - uses: actions/upload-artifact@v3
