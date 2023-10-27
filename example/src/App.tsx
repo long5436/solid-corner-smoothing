@@ -1,5 +1,5 @@
-import SolidCornerSmoothing, { Options } from 'lib';
 import { createSignal, type Component } from 'solid-js';
+import SolidCornerSmoothing, { Options } from '../../dist';
 // import SolidCornerSmoothing, { Options } from '../../dist';
 import image from './assets/image.jpg';
 import Code from './components/Code';
