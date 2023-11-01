@@ -34,10 +34,11 @@ jobs:
       - uses: actions/setup-node@v3
         with:
           node-version: 18
-      - run: npm i
-      - run: npm run build
       - run: |
-          cd ./example 
+          npm i
+          npm run build
+          cp -r ./dist ./example/src
+          cd ./example
           npm i
           npm run build
       - name: Setup Pages
