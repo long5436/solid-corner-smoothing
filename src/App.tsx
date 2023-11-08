@@ -1,8 +1,10 @@
-import { Component } from 'solid-js';
+import { Component, createSignal } from 'solid-js';
 import './app.css';
 import SolidCornerSmoothing from './package';
 
 const App: Component = () => {
+  const [radius, setRadius] = createSignal<number>(40);
+
   return (
     <div>
       <SolidCornerSmoothing
@@ -20,6 +22,31 @@ const App: Component = () => {
       >
         <h1>Hello</h1>
       </SolidCornerSmoothing>
+      <SolidCornerSmoothing
+        style={{
+          background: 'tan',
+          width: '200px',
+          height: '200px',
+        }}
+        options={{
+          cornerRadius: radius(),
+          cornerSmoothing: 0.8,
+          border: {
+            size: 10,
+            color: 'skyblue',
+          },
+        }}
+      >
+        <h1>Hello</h1>
+      </SolidCornerSmoothing>
+      <input
+        type="number"
+        value={radius()}
+        style={{
+          'font-size': '40px',
+        }}
+        onInput={(e) => setRadius(+e.target.value)}
+      />
     </div>
   );
 };

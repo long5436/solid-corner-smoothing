@@ -1,6 +1,8 @@
 import { CSS, CreateCss, Size } from '../type';
 import { attrs } from './domAttr';
 
+const { style } = attrs;
+
 class DomMethods {
   container: Document;
 
@@ -44,7 +46,7 @@ class DomMethods {
       if (!styleTag) {
         styleTag = this.container.createElement('style');
         styleTag.setAttribute('type', 'text/css');
-        styleTag.dataset[attrs.style.camel] = id;
+        styleTag.dataset[style.camel] = id;
       }
 
       styleTag.innerHTML = rawCss.reduce((prev, current) => {
@@ -61,31 +63,36 @@ class DomMethods {
 
   createCss(data: CreateCss): string {
     let properiesString = '';
-    let cssNamme = '';
+    let cssName = '';
+    const { id, class: className, selector } = data;
 
     for (const key in data.properies) {
-      data.properies as string;
+      const { properies } = data;
 
-      if (Object.prototype.hasOwnProperty.call(data.properies, key)) {
-        if ((data.properies as string)[key as any] !== undefined || null) {
-          properiesString += key + ':' + (data.properies as string)[key as any] + ';';
+      if (Object.prototype.hasOwnProperty.call(properies, key)) {
+        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+        // @ts-ignore
+        if (properies[key] !== undefined || null) {
+          // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+          // @ts-ignore
+          properiesString += key + ':' + properies[key] + ';';
         }
       }
     }
 
-    if (data.id) {
-      cssNamme = '#' + data.id;
-    } else if (data.class) {
-      cssNamme = '.' + data.class;
+    if (id) {
+      cssName = '#' + id;
+    } else if (className) {
+      cssName = '.' + className;
     } else {
-      cssNamme = data.selector || '';
+      cssName = selector || '';
     }
 
-    return (cssNamme + '{' + properiesString + '}') as string;
+    return (cssName + '{' + properiesString + '}') as string;
   }
 
   getElement(id: string, name?: string): HTMLElement | null {
-    const attrName = name || attrs.style.name;
+    const attrName = name || style.name;
     return this.container.querySelector('[' + attrName + '=' + id.toString() + ']');
   }
 }

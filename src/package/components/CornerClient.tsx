@@ -12,6 +12,7 @@ import { attrs } from '../utils/domAttr';
 // import { container, createCss, getElement, getSize, setCssStyle } from '../utils/domMethods';
 import DomMethods from '../utils/domMethods';
 import { calculateEachCornerEadius, createPath, fitBorderSize } from '../utils/svgPathMethods';
+const { wrapperBorder, border, cloneContentElement, content } = attrs;
 
 const CornerClient: Component<Props> = (props) => {
   // const [localFigmaSquircleOptions, setLocalFigmaSquircleOptions] = createSignal<Options>({});
@@ -51,7 +52,7 @@ const CornerClient: Component<Props> = (props) => {
       }
 
       return domMethods?.createCss({
-        selector: '[' + attrs.content.name + '="' + props.randomId + '"]',
+        selector: '[' + content.name + '="' + props.randomId + '"]',
         properies: {
           'clip-path': "path('" + pathSvg + "')",
           overflow: 'hidden',
@@ -61,7 +62,7 @@ const CornerClient: Component<Props> = (props) => {
     },
     cssBorderWrapper: () =>
       domMethods?.createCss({
-        selector: '[' + attrs.wrapperBorder.name + '="' + props.randomId + '"]',
+        selector: '[' + wrapperBorder.name + '="' + props.randomId + '"]',
         properies: {
           position: 'relative', // getPositionProperty(props.parent as HTMLElement),
           'box-sizing': 'border-box',
@@ -70,7 +71,7 @@ const CornerClient: Component<Props> = (props) => {
       }),
     cssBorder: (pathSvgBorder: string, borderColor: string) =>
       domMethods?.createCss({
-        selector: '[' + attrs.border.name + '="' + props.randomId + '"]',
+        selector: '[' + border.name + '="' + props.randomId + '"]',
         properies: {
           position: 'absolute',
           inset: 0,
@@ -81,7 +82,7 @@ const CornerClient: Component<Props> = (props) => {
       }),
     cssCloneContent: () =>
       domMethods?.createCss({
-        selector: '[' + attrs.cloneContentElement.name + '="' + props.randomId + '"]',
+        selector: '[' + cloneContentElement.name + '="' + props.randomId + '"]',
         properies: {
           opacity: 0,
         },
@@ -96,7 +97,7 @@ const CornerClient: Component<Props> = (props) => {
       const checkEmementSize: Size = domMethods?.getSize(
         domMethods?.getElement(
           props.randomId,
-          borderOption ? attrs.cloneContentElement.name : attrs.content.name
+          borderOption ? cloneContentElement.name : content.name
         ) as HTMLElement
       ) as Size; // the element being tracked changes size
 
@@ -231,7 +232,7 @@ const CornerClient: Component<Props> = (props) => {
 
     const el = domMethods?.getElement(
       props.randomId,
-      props.options?.border ? attrs.cloneContentElement.name : attrs.content.name
+      props.options?.border ? cloneContentElement.name : content.name
     ) as HTMLElement;
 
     if (el) {
@@ -285,7 +286,7 @@ const CornerClient: Component<Props> = (props) => {
     domMethods = new DomMethods(document);
 
     // This is currently only for the purpose of checking if the content exists or not
-    contentElement = domMethods.getElement(props.randomId, attrs.content.name);
+    contentElement = domMethods.getElement(props.randomId, content.name);
 
     // Create style tag to head tag
     domMethods.setCssStyle(props.randomId, [createListCss.cssBorderWrapper()]);
