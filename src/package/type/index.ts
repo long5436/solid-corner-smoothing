@@ -31,7 +31,7 @@ export interface Props {
   options: Options;
   // parent: HTMLElement;
   // parentClone: HTMLElement;
-  randomId: string;
+  id: string;
   // componentRefs: ComponentRefs;
 }
 

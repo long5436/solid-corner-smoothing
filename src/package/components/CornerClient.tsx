@@ -52,7 +52,7 @@ const CornerClient: Component<Props> = (props) => {
       }
 
       return domMethods?.createCss({
-        selector: '[' + content.name + '="' + props.randomId + '"]',
+        selector: '[' + content.name + '="' + props.id + '"]',
         properies: {
           'clip-path': "path('" + pathSvg + "')",
           overflow: 'hidden',
@@ -62,7 +62,7 @@ const CornerClient: Component<Props> = (props) => {
     },
     cssBorderWrapper: () =>
       domMethods?.createCss({
-        selector: '[' + wrapperBorder.name + '="' + props.randomId + '"]',
+        selector: '[' + wrapperBorder.name + '="' + props.id + '"]',
         properies: {
           position: 'relative', // getPositionProperty(props.parent as HTMLElement),
           'box-sizing': 'border-box',
@@ -71,7 +71,7 @@ const CornerClient: Component<Props> = (props) => {
       }),
     cssBorder: (pathSvgBorder: string, borderColor: string) =>
       domMethods?.createCss({
-        selector: '[' + border.name + '="' + props.randomId + '"]',
+        selector: '[' + border.name + '="' + props.id + '"]',
         properies: {
           position: 'absolute',
           inset: 0,
@@ -82,7 +82,7 @@ const CornerClient: Component<Props> = (props) => {
       }),
     cssCloneContent: () =>
       domMethods?.createCss({
-        selector: '[' + cloneContentElement.name + '="' + props.randomId + '"]',
+        selector: '[' + cloneContentElement.name + '="' + props.id + '"]',
         properies: {
           opacity: 0,
         },
@@ -96,7 +96,7 @@ const CornerClient: Component<Props> = (props) => {
       // https://stackoverflow.com/questions/32438642/clientwidth-and-clientheight-report-zero-while-getboundingclientrect-is-correct
       const checkEmementSize: Size = domMethods?.getSize(
         domMethods?.getElement(
-          props.randomId,
+          props.id,
           borderOption ? cloneContentElement.name : content.name
         ) as HTMLElement
       ) as Size; // the element being tracked changes size
@@ -118,7 +118,7 @@ const CornerClient: Component<Props> = (props) => {
           });
 
           // create style tag to head tag
-          domMethods?.setCssStyle(props.randomId, [createListCss.cssContent(pathSvg)]);
+          domMethods?.setCssStyle(props.id, [createListCss.cssContent(pathSvg)]);
         } else {
           const pathSvg = createPath({
             // ...sizeElement,
@@ -147,7 +147,7 @@ const CornerClient: Component<Props> = (props) => {
           });
 
           // create style tag to head tag
-          domMethods?.setCssStyle(props.randomId, [
+          domMethods?.setCssStyle(props.id, [
             createListCss.cssCloneContent(),
             createListCss.cssContent(pathSvg, checkEmementSize, borderOption),
             createListCss.cssBorderWrapper(),
@@ -231,7 +231,7 @@ const CornerClient: Component<Props> = (props) => {
     */
 
     const el = domMethods?.getElement(
-      props.randomId,
+      props.id,
       props.options?.border ? cloneContentElement.name : content.name
     ) as HTMLElement;
 
@@ -249,7 +249,7 @@ const CornerClient: Component<Props> = (props) => {
 
   // call cleanup when component unmout
   const clean = (): void => {
-    const el = domMethods?.getElement(props.randomId);
+    const el = domMethods?.getElement(props.id);
 
     if (el) el.remove();
     removeObserver();
@@ -286,10 +286,10 @@ const CornerClient: Component<Props> = (props) => {
     domMethods = new DomMethods(document);
 
     // This is currently only for the purpose of checking if the content exists or not
-    contentElement = domMethods.getElement(props.randomId, content.name);
+    contentElement = domMethods.getElement(props.id, content.name);
 
     // Create style tag to head tag
-    domMethods.setCssStyle(props.randomId, [createListCss.cssBorderWrapper()]);
+    domMethods.setCssStyle(props.id, [createListCss.cssBorderWrapper()]);
 
     createResizeObserver(true, null, () => {
       if (props.options?.reSize) {
