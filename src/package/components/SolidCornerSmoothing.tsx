@@ -3,12 +3,13 @@ import {
   JSX,
   JSXElement,
   Show,
+  children,
   createResource,
   createSignal,
   onMount,
   splitProps,
 } from 'solid-js';
-import { Dynamic, isServer } from 'solid-js/web';
+import { Dynamic } from 'solid-js/web';
 import { CSS, Options } from '../type';
 import { attrs } from '../utils/domAttr';
 import { createUUID } from '../utils/generalMethods';
@@ -35,6 +36,7 @@ const SolidCornerSmoothing: Component<Props> = (props) => {
   // const [id] = createSignal<string>(createUUID());
   const [id] = createResource<string>(() => createUUID());
   const { wrapperBorder, border, cloneContentElement, content } = attrs;
+  const resolved = children(() => props.children);
 
   onMount(() => {
     if (!isClient()) {
@@ -51,8 +53,6 @@ const SolidCornerSmoothing: Component<Props> = (props) => {
       'style',
       'class',
     ]);
-
-    // const [wrapper] = createResource<string | Component>(() => componentDefault);
 
     // create styles inline for SSR
     const styles = (): CSS.PropertiesHyphen => {
@@ -82,11 +82,10 @@ const SolidCornerSmoothing: Component<Props> = (props) => {
         {...otherProps}
         {...{ [props?.clone ? cloneContentElement.name : content.name]: id() }}
         style={styles()}
-        key={createUUID()}
       >
-        {localProps.children}
-        <Show when={!localProps?.clone && !isServer}>
-          <CornerClient options={localProps?.options} id={id() as string} />
+        {resolved()}
+        <Show when={isClient()}>
+          <CornerClient options={localProps.options} id={id() as string} />
         </Show>
       </Dynamic>
     );
@@ -95,13 +94,7 @@ const SolidCornerSmoothing: Component<Props> = (props) => {
   const ContentComponent: Component<Props & PropsContent> = (props) => {
     return (
       <>
-        <Show when={isServer}>
-          <DynamicContent {...props} />
-        </Show>
-
-        <Show when={!isServer}>
-          <DynamicContent {...props} />
-        </Show>
+        <DynamicContent {...props} />
       </>
     );
   };
@@ -111,12 +104,8 @@ const SolidCornerSmoothing: Component<Props> = (props) => {
       {props.options?.border ? (
         <div {...{ [wrapperBorder.name]: id() }}>
           <span {...{ [border.name]: id() }} />
-          <div>
-            <ContentComponent {...props} clone={true} key="1" />
-          </div>
-          <div>
-            <ContentComponent {...props} key="2" />
-          </div>
+          <ContentComponent {...props} clone={true} />
+          <ContentComponent {...props} />
         </div>
       ) : (
         <>

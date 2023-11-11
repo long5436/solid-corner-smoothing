@@ -291,6 +291,8 @@ const CornerClient: Component<Props> = (props) => {
     // Create style tag to head tag
     domMethods.setCssStyle(props.id, [createListCss.cssBorderWrapper()]);
 
+    console.log({ contentElement, props });
+
     createResizeObserver(true, null, () => {
       if (props.options?.reSize) {
         watchDomResize();
