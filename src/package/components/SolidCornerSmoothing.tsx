@@ -38,6 +38,7 @@ const SolidCornerSmoothing: Component<Props> = (props) => {
   const [id] = createResource<string>(() => createRandomId());
   const { wrapperBorder, border, cloneContentElement, content } = attrs;
   const resolved = children(() => props.children);
+  const resolvedClone = children(() => props.children);
 
   // onMount(() => {
   //   if (!isClient()) {
@@ -77,14 +78,16 @@ const SolidCornerSmoothing: Component<Props> = (props) => {
 
     return (
       <Dynamic
-        class={props?.class}
-        classList={props?.classList}
-        component={props?.wrapper || componentDefault}
+        class={localProps?.class}
+        // classList={localProps?.classList}
+        component={localProps?.wrapper || componentDefault}
         {...otherProps}
-        {...{ [props?.clone ? cloneContentElement.name : content.name]: id() }}
+        {...{ [localProps?.clone ? cloneContentElement.name : content.name]: id() }}
         style={styles()}
       >
-        {resolved()}
+        <Show when={localProps?.clone} fallback={resolvedClone()}>
+          {resolved()}
+        </Show>
         <Show when={!isServer}>
           <CornerClient
             options={localProps.options}
