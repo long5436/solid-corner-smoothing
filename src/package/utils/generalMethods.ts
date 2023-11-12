@@ -1,7 +1,5 @@
-const defaultLength = 5; // length of uuid string
-
-const createUUID = (length?: number): string => {
-  return '_' + (Math.random() + 1).toString(36).substring((length || defaultLength) - 1);
+const createRandomId = () => {
+  return '_' + Math.random().toString(36).substring(3, 9);
 };
 
-export { createUUID };
+export { createRandomId };

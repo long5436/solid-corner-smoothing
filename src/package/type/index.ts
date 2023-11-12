@@ -29,10 +29,11 @@ export interface Props {
   };
   wrapper?: Component | string;
   options: Options;
-  // parent: HTMLElement;
-  // parentClone: HTMLElement;
-  randomId: string;
-  // componentRefs: ComponentRefs;
+}
+
+export interface PropsLocal {
+  id: string;
+  onCallBack?: () => void;
 }
 
 export type BorderOption = {

@@ -5,6 +5,7 @@ import {
   CreateCorner,
   FigmaSquircleParams,
   Props,
+  PropsLocal,
   Size,
   TimeoutCallback,
 } from '../type';
@@ -14,7 +15,9 @@ import DomMethods from '../utils/domMethods';
 import { calculateEachCornerEadius, createPath, fitBorderSize } from '../utils/svgPathMethods';
 const { wrapperBorder, border, cloneContentElement, content } = attrs;
 
-const CornerClient: Component<Props> = (props) => {
+type P = Props & PropsLocal;
+
+const CornerClient: Component<P> = (props) => {
   // const [localFigmaSquircleOptions, setLocalFigmaSquircleOptions] = createSignal<Options>({});
 
   // eslint-disable-next-line prefer-const
@@ -26,7 +29,7 @@ const CornerClient: Component<Props> = (props) => {
   // eslint-disable-next-line prefer-const
   let contentElement: HTMLElement | null = null;
   // eslint-disable-next-line prefer-const
-  let domMethods: DomMethods | null = null;
+  let domMethods: DomMethods;
 
   const localFigmaSquircleOptions = createMemo(() => {
     return props.options;
@@ -52,7 +55,7 @@ const CornerClient: Component<Props> = (props) => {
       }
 
       return domMethods?.createCss({
-        selector: '[' + content.name + '="' + props.randomId + '"]',
+        selector: '[' + content.name + '="' + props.id + '"]',
         properies: {
           'clip-path': "path('" + pathSvg + "')",
           overflow: 'hidden',
@@ -62,7 +65,7 @@ const CornerClient: Component<Props> = (props) => {
     },
     cssBorderWrapper: () =>
       domMethods?.createCss({
-        selector: '[' + wrapperBorder.name + '="' + props.randomId + '"]',
+        selector: '[' + wrapperBorder.name + '="' + props.id + '"]',
         properies: {
           position: 'relative', // getPositionProperty(props.parent as HTMLElement),
           'box-sizing': 'border-box',
@@ -71,7 +74,7 @@ const CornerClient: Component<Props> = (props) => {
       }),
     cssBorder: (pathSvgBorder: string, borderColor: string) =>
       domMethods?.createCss({
-        selector: '[' + border.name + '="' + props.randomId + '"]',
+        selector: '[' + border.name + '="' + props.id + '"]',
         properies: {
           position: 'absolute',
           inset: 0,
@@ -82,7 +85,7 @@ const CornerClient: Component<Props> = (props) => {
       }),
     cssCloneContent: () =>
       domMethods?.createCss({
-        selector: '[' + cloneContentElement.name + '="' + props.randomId + '"]',
+        selector: '[' + cloneContentElement.name + '="' + props.id + '"]',
         properies: {
           opacity: 0,
         },
@@ -96,7 +99,7 @@ const CornerClient: Component<Props> = (props) => {
       // https://stackoverflow.com/questions/32438642/clientwidth-and-clientheight-report-zero-while-getboundingclientrect-is-correct
       const checkEmementSize: Size = domMethods?.getSize(
         domMethods?.getElement(
-          props.randomId,
+          props.id,
           borderOption ? cloneContentElement.name : content.name
         ) as HTMLElement
       ) as Size; // the element being tracked changes size
@@ -118,7 +121,7 @@ const CornerClient: Component<Props> = (props) => {
           });
 
           // create style tag to head tag
-          domMethods?.setCssStyle(props.randomId, [createListCss.cssContent(pathSvg)]);
+          domMethods?.setCssStyle(props.id, [createListCss.cssContent(pathSvg)]);
         } else {
           const pathSvg = createPath({
             // ...sizeElement,
@@ -147,7 +150,7 @@ const CornerClient: Component<Props> = (props) => {
           });
 
           // create style tag to head tag
-          domMethods?.setCssStyle(props.randomId, [
+          domMethods?.setCssStyle(props.id, [
             createListCss.cssCloneContent(),
             createListCss.cssContent(pathSvg, checkEmementSize, borderOption),
             createListCss.cssBorderWrapper(),
@@ -181,27 +184,6 @@ const CornerClient: Component<Props> = (props) => {
   // Watch for resizing changes in the DOM and do svgpath regeneration
   const watchDomResize = (skipCheck?: boolean): void => {
     // if (props.parent) {
-    //   if (props.options?.reSize) {
-    //     if (props.options?.debounce) {
-    //       resizeObserver = new ResizeObserver(() => {
-    //         if (timeoutDebounce) clearTimeout(timeoutDebounce);
-
-    //         timeoutDebounce = setTimeout(() => {
-    //           createCorner(skipCheck);
-    //         }, props.options?.debounce) as unknown as ReturnType<typeof setTimeout>;
-    //       });
-    //     } else {
-    //       resizeObserver = new ResizeObserver(() => {
-    //         createCorner(skipCheck);
-    //       });
-    //     }
-    //     resizeObserver.observe(props.options?.border ? props.parentClone : props.parent);
-    //   } else {
-    //     createCorner(skipCheck);
-    //   }
-    // }
-
-    // if (props.parent) {
     if (contentElement) {
       if (props.options?.reSize) {
         if (props.options?.debounce) {
@@ -231,7 +213,7 @@ const CornerClient: Component<Props> = (props) => {
     */
 
     const el = domMethods?.getElement(
-      props.randomId,
+      props.id,
       props.options?.border ? cloneContentElement.name : content.name
     ) as HTMLElement;
 
@@ -249,22 +231,11 @@ const CornerClient: Component<Props> = (props) => {
 
   // call cleanup when component unmout
   const clean = (): void => {
-    const el = domMethods?.getElement(props.randomId);
+    const el = domMethods?.getElement(props.id);
 
     if (el) el.remove();
     removeObserver();
   };
-
-  // createEffect(() => {
-  //   const newObj = Object.assign(props.options);
-
-  //   console.log({ newObj });
-
-  //   setLocalFigmaSquircleOptions({
-  //     ...newObj,
-  //     preserveSmoothing: props.options?.preserveSmoothing || true,
-  //   });
-  // });
 
   createEffect(
     on(
@@ -285,22 +256,26 @@ const CornerClient: Component<Props> = (props) => {
     // Create domMethods with document
     domMethods = new DomMethods(document);
 
-    // This is currently only for the purpose of checking if the content exists or not
-    contentElement = domMethods.getElement(props.randomId, content.name);
+    requestIdleCallback(() => {
+      // This is currently only for the purpose of checking if the content exists or not
+      contentElement = domMethods.getElement(props.id, content.name);
 
-    // Create style tag to head tag
-    domMethods.setCssStyle(props.randomId, [createListCss.cssBorderWrapper()]);
+      // Create style tag to head tag
+      domMethods.setCssStyle(props.id, [createListCss.cssBorderWrapper()]);
 
-    createResizeObserver(true, null, () => {
-      if (props.options?.reSize) {
-        watchDomResize();
-      } else {
-        removeObserver();
-        watchDomResize();
-      }
+      createResizeObserver(true, null, () => {
+        if (props.options?.reSize) {
+          watchDomResize();
+        } else {
+          removeObserver();
+          watchDomResize();
+        }
+
+        if (props.onCallBack) props.onCallBack();
+      });
+
+      addObserve();
     });
-
-    addObserve();
   });
 
   onCleanup(() => {
