@@ -26,7 +26,7 @@ const CornerClient: Component<Props> = (props) => {
   // eslint-disable-next-line prefer-const
   let contentElement: HTMLElement | null = null;
   // eslint-disable-next-line prefer-const
-  let domMethods: DomMethods | null = null;
+  let domMethods: DomMethods;
 
   const localFigmaSquircleOptions = createMemo(() => {
     return props.options;
@@ -285,24 +285,24 @@ const CornerClient: Component<Props> = (props) => {
     // Create domMethods with document
     domMethods = new DomMethods(document);
 
-    // This is currently only for the purpose of checking if the content exists or not
-    contentElement = domMethods.getElement(props.id, content.name);
+    requestIdleCallback(() => {
+      // This is currently only for the purpose of checking if the content exists or not
+      contentElement = domMethods.getElement(props.id, content.name);
 
-    // Create style tag to head tag
-    domMethods.setCssStyle(props.id, [createListCss.cssBorderWrapper()]);
+      // Create style tag to head tag
+      domMethods.setCssStyle(props.id, [createListCss.cssBorderWrapper()]);
 
-    console.log({ contentElement, props });
+      createResizeObserver(true, null, () => {
+        if (props.options?.reSize) {
+          watchDomResize();
+        } else {
+          removeObserver();
+          watchDomResize();
+        }
+      });
 
-    createResizeObserver(true, null, () => {
-      if (props.options?.reSize) {
-        watchDomResize();
-      } else {
-        removeObserver();
-        watchDomResize();
-      }
+      addObserve();
     });
-
-    addObserve();
   });
 
   onCleanup(() => {

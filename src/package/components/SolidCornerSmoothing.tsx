@@ -30,6 +30,8 @@ interface PropsContent {
 }
 
 const componentDefault = 'div';
+// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+// @ts-ignore
 
 const SolidCornerSmoothing: Component<Props> = (props) => {
   const [isClient, setIsClient] = createSignal<boolean>(false);
@@ -74,6 +76,16 @@ const SolidCornerSmoothing: Component<Props> = (props) => {
       return result;
     };
 
+    onMount(() => {
+      console.log({ id: id() });
+      const selector = `[data-scs-content="${id()}"]`;
+      console.log(selector);
+
+      requestIdleCallback(() => {
+        console.log(document.querySelector(selector));
+      });
+    });
+
     return (
       <Dynamic
         class={props?.class}
@@ -102,11 +114,19 @@ const SolidCornerSmoothing: Component<Props> = (props) => {
   return (
     <>
       {props.options?.border ? (
-        <div {...{ [wrapperBorder.name]: id() }}>
-          <span {...{ [border.name]: id() }} />
-          <ContentComponent {...props} clone={true} />
-          <ContentComponent {...props} />
-        </div>
+        <>
+          {/* <Show when={isServer}>
+            <ContentComponent {...props} />
+          </Show> */}
+
+          <>
+            <div {...{ [wrapperBorder.name]: id() }}>
+              <span {...{ [border.name]: id() }} />
+              <ContentComponent {...props} clone={true} />
+              <ContentComponent {...props} />
+            </div>
+          </>
+        </>
       ) : (
         <>
           <ContentComponent {...props} />
