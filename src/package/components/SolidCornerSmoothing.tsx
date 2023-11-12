@@ -6,13 +6,12 @@ import {
   children,
   createResource,
   createSignal,
-  onMount,
   splitProps,
 } from 'solid-js';
-import { Dynamic } from 'solid-js/web';
+import { Dynamic, isServer } from 'solid-js/web';
 import { CSS, Options } from '../type';
 import { attrs } from '../utils/domAttr';
-import { createUUID } from '../utils/generalMethods';
+import { createRandomId } from '../utils/generalMethods';
 import CornerClient from './CornerClient';
 
 interface Props {
@@ -35,18 +34,18 @@ const componentDefault = 'div';
 
 const SolidCornerSmoothing: Component<Props> = (props) => {
   const [isClient, setIsClient] = createSignal<boolean>(false);
-  // const [id] = createSignal<string>(createUUID());
-  const [id] = createResource<string>(() => createUUID());
+  // const [id] = createSignal<string>(createRandomId());
+  const [id] = createResource<string>(() => createRandomId());
   const { wrapperBorder, border, cloneContentElement, content } = attrs;
   const resolved = children(() => props.children);
 
-  onMount(() => {
-    if (!isClient()) {
-      setIsClient(true);
-    }
-  });
+  // onMount(() => {
+  //   if (!isClient()) {
+  //     setIsClient(true);
+  //   }
+  // });
 
-  const DynamicContent: Component<Props> = (props) => {
+  const ContentComponent: Component<Props & PropsContent> = (props) => {
     const [localProps, otherProps] = splitProps(props, [
       'clone',
       'wrapper',
@@ -76,16 +75,6 @@ const SolidCornerSmoothing: Component<Props> = (props) => {
       return result;
     };
 
-    onMount(() => {
-      console.log({ id: id() });
-      const selector = `[data-scs-content="${id()}"]`;
-      console.log(selector);
-
-      requestIdleCallback(() => {
-        console.log(document.querySelector(selector));
-      });
-    });
-
     return (
       <Dynamic
         class={props?.class}
@@ -96,41 +85,29 @@ const SolidCornerSmoothing: Component<Props> = (props) => {
         style={styles()}
       >
         {resolved()}
-        <Show when={isClient()}>
-          <CornerClient options={localProps.options} id={id() as string} />
+        <Show when={!isServer}>
+          <CornerClient
+            options={localProps.options}
+            id={id() as string}
+            onCallBack={() => {
+              setIsClient(true);
+            }}
+          />
         </Show>
       </Dynamic>
-    );
-  };
-
-  const ContentComponent: Component<Props & PropsContent> = (props) => {
-    return (
-      <>
-        <DynamicContent {...props} />
-      </>
     );
   };
 
   return (
     <>
       {props.options?.border ? (
-        <>
-          {/* <Show when={isServer}>
-            <ContentComponent {...props} />
-          </Show> */}
-
-          <>
-            <div {...{ [wrapperBorder.name]: id() }}>
-              <span {...{ [border.name]: id() }} />
-              <ContentComponent {...props} clone={true} />
-              <ContentComponent {...props} />
-            </div>
-          </>
-        </>
-      ) : (
-        <>
+        <div {...{ [wrapperBorder.name]: id() }}>
+          <span {...{ [border.name]: id() }} />
+          <ContentComponent {...props} clone={true} />
           <ContentComponent {...props} />
-        </>
+        </div>
+      ) : (
+        <ContentComponent {...props} />
       )}
     </>
   );

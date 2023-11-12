@@ -5,6 +5,7 @@ import {
   CreateCorner,
   FigmaSquircleParams,
   Props,
+  PropsLocal,
   Size,
   TimeoutCallback,
 } from '../type';
@@ -14,7 +15,9 @@ import DomMethods from '../utils/domMethods';
 import { calculateEachCornerEadius, createPath, fitBorderSize } from '../utils/svgPathMethods';
 const { wrapperBorder, border, cloneContentElement, content } = attrs;
 
-const CornerClient: Component<Props> = (props) => {
+type P = Props & PropsLocal;
+
+const CornerClient: Component<P> = (props) => {
   // const [localFigmaSquircleOptions, setLocalFigmaSquircleOptions] = createSignal<Options>({});
 
   // eslint-disable-next-line prefer-const
@@ -181,27 +184,6 @@ const CornerClient: Component<Props> = (props) => {
   // Watch for resizing changes in the DOM and do svgpath regeneration
   const watchDomResize = (skipCheck?: boolean): void => {
     // if (props.parent) {
-    //   if (props.options?.reSize) {
-    //     if (props.options?.debounce) {
-    //       resizeObserver = new ResizeObserver(() => {
-    //         if (timeoutDebounce) clearTimeout(timeoutDebounce);
-
-    //         timeoutDebounce = setTimeout(() => {
-    //           createCorner(skipCheck);
-    //         }, props.options?.debounce) as unknown as ReturnType<typeof setTimeout>;
-    //       });
-    //     } else {
-    //       resizeObserver = new ResizeObserver(() => {
-    //         createCorner(skipCheck);
-    //       });
-    //     }
-    //     resizeObserver.observe(props.options?.border ? props.parentClone : props.parent);
-    //   } else {
-    //     createCorner(skipCheck);
-    //   }
-    // }
-
-    // if (props.parent) {
     if (contentElement) {
       if (props.options?.reSize) {
         if (props.options?.debounce) {
@@ -255,17 +237,6 @@ const CornerClient: Component<Props> = (props) => {
     removeObserver();
   };
 
-  // createEffect(() => {
-  //   const newObj = Object.assign(props.options);
-
-  //   console.log({ newObj });
-
-  //   setLocalFigmaSquircleOptions({
-  //     ...newObj,
-  //     preserveSmoothing: props.options?.preserveSmoothing || true,
-  //   });
-  // });
-
   createEffect(
     on(
       localFigmaSquircleOptions,
@@ -299,6 +270,8 @@ const CornerClient: Component<Props> = (props) => {
           removeObserver();
           watchDomResize();
         }
+
+        if (props.onCallBack) props.onCallBack();
       });
 
       addObserve();

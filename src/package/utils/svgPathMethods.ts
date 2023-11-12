@@ -5,14 +5,8 @@ import type { EachCornerEadius, FigmaSquircleParams, OptionsDefault } from '../t
 
 const cornerDefault: OptionsDefault = { cornerSmoothing: 1, cornerRadius: 10 };
 
-const createPath = (options: FigmaSquircleParams, transform?: string) => {
+const createPath = (options: FigmaSquircleParams) => {
   const rawPath: string = getSvgPath({ ...cornerDefault, ...options });
-  // const path: string = svgpath(rawPath)
-  //   .rel()
-  //   .transform(transform || '')
-  //   .round(1)
-  //   .toString();
-
   const path = minifyPath(rawPath);
   return path || '';
 };
@@ -38,16 +32,22 @@ const calculateEachCornerEadius = (
     bottomRightCornerRadius,
     bottomLeftCornerRadius,
   };
-  for (const key in result) {
-    if (Object.prototype.hasOwnProperty.call(result, key)) {
+
+  const entries = Object.entries(result);
+
+  entries.forEach((e) => {
+    const key = e[0];
+    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+    // @ts-ignore
+    if (result[key]) {
       // eslint-disable-next-line @typescript-eslint/ban-ts-comment
       // @ts-ignore
       const newSize = result[key] - borderSize;
       // eslint-disable-next-line @typescript-eslint/ban-ts-comment
       // @ts-ignore
-      result[key] = newSize >= 0 ? newSize : null;
+      result[key] = newSize >= 1 ? newSize : 1;
     }
-  }
+  });
 
   return result;
 };

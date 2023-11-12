@@ -11,74 +11,58 @@ class DomMethods {
   }
 
   getSize(element: HTMLElement, borderWidth?: number): Size {
+    const size: Size = { width: 0, height: 0 };
+
     if (element) {
-      const { width, height }: Size = {
-        width: element.clientWidth,
-        height: element.clientHeight,
-      };
-
       const resultBorderWidth: number = borderWidth ? borderWidth * 2 : 0;
+      const { clientHeight, clientWidth } = element;
 
-      return {
-        width: width - resultBorderWidth,
-        height: height - resultBorderWidth,
-      };
+      size.height = clientHeight - resultBorderWidth;
+      size.width = clientWidth - resultBorderWidth;
     }
 
-    return { width: 0, height: 0 };
+    return size;
   }
 
   getPositionProperty(element: HTMLElement): CSS.Property.Position {
     const currentPosition = getComputedStyle(element).position as CSS.Property.Position;
 
-    if (currentPosition === 'static' || (currentPosition as string) === '') {
-      return 'relative';
+    switch (currentPosition) {
+      case '' as string:
+      case 'static':
+        return 'relative';
+      default:
+        return currentPosition;
     }
-
-    return currentPosition;
   }
 
   setCssStyle(id: string, rawCss: (string | undefined)[]): void {
     let styleTag: HTMLElement | null = this.getElement(id);
-    const check = !!styleTag;
 
-    if (this.container) {
-      if (!styleTag) {
-        styleTag = this.container.createElement('style');
-        styleTag.setAttribute('type', 'text/css');
-        styleTag.dataset[style.camel] = id;
-      }
-
-      styleTag.innerHTML = rawCss.reduce((prev, current) => {
-        if (current) {
-          return prev + current;
-        }
-      }, '') as string;
-
-      if (!check) {
-        this.container.head.appendChild(styleTag);
-      }
+    if (!styleTag) {
+      styleTag = this.container.createElement('style');
+      styleTag.setAttribute('type', 'text/css');
+      styleTag.dataset[style.camel] = id;
     }
+
+    styleTag.innerHTML = rawCss.reduce((prev, current) => {
+      if (current) {
+        return prev + current;
+      }
+    }, '') as string;
+
+    this.container.head.appendChild(styleTag);
   }
 
   createCss(data: CreateCss): string {
-    let properiesString = '';
     let cssName = '';
-    const { id, class: className, selector } = data;
-
-    for (const key in data.properies) {
-      const { properies } = data;
-
-      if (Object.prototype.hasOwnProperty.call(properies, key)) {
-        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-        // @ts-ignore
-        if (properies[key] !== undefined || null) {
-          // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-          // @ts-ignore
-          properiesString += key + ':' + properies[key] + ';';
-        }
-      }
-    }
+    const { id, class: className, selector, properies } = data;
+    const entries = Object.entries(properies);
+    const properiesString = entries
+      .map((e) => {
+        return e[0] + ':' + e[1] + ';';
+      })
+      .join('');
 
     if (id) {
       cssName = '#' + id;
@@ -88,7 +72,7 @@ class DomMethods {
       cssName = selector || '';
     }
 
-    return (cssName + '{' + properiesString + '}') as string;
+    return cssName + '{' + properiesString + '}';
   }
 
   getElement(id: string, name?: string): HTMLElement | null {
