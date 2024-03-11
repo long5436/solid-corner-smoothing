@@ -52,4 +52,8 @@ const calculateEachCornerEadius = (
   return result;
 };
 
-export { calculateEachCornerEadius, createPath, fitBorderSize };
+const createInlineSvg = (path: string): string => {
+  return `url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' ><path d='${path}'/></svg>")`;
+};
+
+export { calculateEachCornerEadius, createInlineSvg, createPath, fitBorderSize };

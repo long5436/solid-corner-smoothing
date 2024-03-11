@@ -12,7 +12,12 @@ import {
 import { attrs } from '../utils/domAttr';
 // import { container, createCss, getElement, getSize, setCssStyle } from '../utils/domMethods';
 import DomMethods from '../utils/domMethods';
-import { calculateEachCornerEadius, createPath, fitBorderSize } from '../utils/svgPathMethods';
+import {
+  calculateEachCornerEadius,
+  createInlineSvg,
+  createPath,
+  fitBorderSize,
+} from '../utils/svgPathMethods';
 const { wrapperBorder, border, cloneContentElement, content } = attrs;
 
 type P = Props & PropsLocal;
@@ -57,7 +62,9 @@ const CornerClient: Component<P> = (props) => {
       return domMethods?.createCss({
         selector: '[' + content.name + '="' + props.id + '"]',
         properies: {
-          'clip-path': "path('" + pathSvg + "')",
+          'mask-image': createInlineSvg(pathSvg),
+          '-webkit-mask-image': createInlineSvg(pathSvg),
+          // "url('path('" + pathSvg + "')')",
           overflow: 'hidden',
           ...propertiesWithBorder,
         },
@@ -79,7 +86,9 @@ const CornerClient: Component<P> = (props) => {
           position: 'absolute',
           inset: 0,
           'background-color': borderColor,
-          'clip-path': "path('" + pathSvgBorder + "')",
+          'mask-image': createInlineSvg(pathSvgBorder),
+          '-webkit-mask-image': createInlineSvg(pathSvgBorder),
+          // 'clip-path': "path('" + pathSvgBorder + "')",
           overflow: 'hidden',
         },
       }),
