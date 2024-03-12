@@ -6,6 +6,7 @@ import {
   children,
   createResource,
   createSignal,
+  onMount,
   splitProps,
 } from 'solid-js';
 import { Dynamic, isServer } from 'solid-js/web';
@@ -101,18 +102,23 @@ const SolidCornerSmoothing: Component<Props> = (props) => {
     );
   };
 
+  onMount(() => {
+    setIsClient(true);
+  });
+
   return (
-    <>
-      {props.options?.border ? (
+    <Show
+      when={props.options?.border && !isServer && isClient()}
+      fallback={<ContentComponent {...props} />}
+    >
+      <Show when={!isServer} fallback={<ContentComponent {...props} />}>
         <div {...{ [wrapperBorder.name]: id() }}>
           <span {...{ [border.name]: id() }} />
           <ContentComponent {...props} clone={true} />
           <ContentComponent {...props} />
         </div>
-      ) : (
-        <ContentComponent {...props} />
-      )}
-    </>
+      </Show>
+    </Show>
   );
 };
 

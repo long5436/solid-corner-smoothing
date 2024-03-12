@@ -51,6 +51,7 @@
     "vite": "^5.1.6",
     "vite-plugin-solid": "^2.10.1"
   },
+  "dependencies": {},
   "module": "./dist/server.js",
   "browser": {
     "./dist/server.js": "./dist/index.js"
