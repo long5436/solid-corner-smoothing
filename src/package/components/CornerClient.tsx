@@ -42,25 +42,33 @@ const CornerClient: Component<P> = (props) => {
 
   const createListCss = {
     cssContent: (pathSvg: string, elementCloneSize?: Size, borderOption?: BorderOption) => {
-      const propertiesWithBorder: CSS.PropertiesHyphen = {};
+      let propertiesWithBorder: CSS.PropertiesHyphen = {};
 
       if (borderOption && elementCloneSize) {
-        propertiesWithBorder.position = 'absolute';
-        propertiesWithBorder.top = 0;
-        propertiesWithBorder.height = elementCloneSize.height - borderOption.size * 2 + 'px';
-        propertiesWithBorder.width = elementCloneSize.width - borderOption.size * 2 + 'px';
-        propertiesWithBorder.transform =
-          'translate(' + borderOption?.size + 'px,' + borderOption?.size + 'px)';
+        const { size } = borderOption;
+        const { height, width } = elementCloneSize;
+
+        propertiesWithBorder = {
+          ...propertiesWithBorder,
+          position: 'absolute',
+          top: 0,
+          height: height - size * 2 + 'px',
+          width: width - size * 2 + 'px',
+          transform: 'translate(' + size + 'px,' + size + 'px)',
+        };
         // propertiesWithBorder['border-radius'] = 'unset !important';
         // propertiesWithBorder.border = 'unset !important';
       }
 
-      if (props.options?.backgroundColor) {
-        propertiesWithBorder['background-color'] = props.options?.backgroundColor;
+      if (localFigmaSquircleOptions().backgroundColor) {
+        propertiesWithBorder = {
+          ...propertiesWithBorder,
+          'background-color': localFigmaSquircleOptions().backgroundColor,
+        };
       }
 
-      return domMethods?.createCss({
-        selector: '[' + content.name + '="' + props.id + '"]',
+      return domMethods.createCss({
+        selector: domMethods.createSelector(content.name),
         properies: {
           'mask-image': createInlineSvg(pathSvg),
           '-webkit-mask-image': createInlineSvg(pathSvg),
@@ -71,8 +79,8 @@ const CornerClient: Component<P> = (props) => {
       });
     },
     cssBorderWrapper: () =>
-      domMethods?.createCss({
-        selector: '[' + wrapperBorder.name + '="' + props.id + '"]',
+      domMethods.createCss({
+        selector: domMethods.createSelector(wrapperBorder.name),
         properies: {
           position: 'relative', // getPositionProperty(props.parent as HTMLElement),
           'box-sizing': 'border-box',
@@ -80,8 +88,8 @@ const CornerClient: Component<P> = (props) => {
         },
       }),
     cssBorder: (pathSvgBorder: string, borderColor: string) =>
-      domMethods?.createCss({
-        selector: '[' + border.name + '="' + props.id + '"]',
+      domMethods.createCss({
+        selector: domMethods.createSelector(border.name),
         properies: {
           position: 'absolute',
           inset: 0,
@@ -93,8 +101,8 @@ const CornerClient: Component<P> = (props) => {
         },
       }),
     cssCloneContent: () =>
-      domMethods?.createCss({
-        selector: '[' + cloneContentElement.name + '="' + props.id + '"]',
+      domMethods.createCss({
+        selector: domMethods.createSelector(cloneContentElement.name),
         properies: {
           opacity: 0,
         },
@@ -103,11 +111,11 @@ const CornerClient: Component<P> = (props) => {
 
   const createCorner: CreateCorner = (skipCheck?: boolean): void => {
     if (contentElement) {
-      const borderOption: BorderOption | undefined = props.options?.border;
+      const borderOption: BorderOption | undefined = localFigmaSquircleOptions().border;
 
       // https://stackoverflow.com/questions/32438642/clientwidth-and-clientheight-report-zero-while-getboundingclientrect-is-correct
-      const checkEmementSize: Size = domMethods?.getSize(
-        domMethods?.getElement(
+      const checkEmementSize: Size = domMethods.getSize(
+        domMethods.getElement(
           props.id,
           borderOption ? cloneContentElement.name : content.name
         ) as HTMLElement
@@ -130,7 +138,7 @@ const CornerClient: Component<P> = (props) => {
           });
 
           // create style tag to head tag
-          domMethods?.setCssStyle(props.id, [createListCss.cssContent(pathSvg)]);
+          domMethods.setCssStyle(props.id, [createListCss.cssContent(pathSvg)]);
         } else {
           const pathSvg = createPath({
             // ...sizeElement,
@@ -147,9 +155,9 @@ const CornerClient: Component<P> = (props) => {
           let borderCornerRadius = Number(localFigmaSquircleOptions().cornerRadius);
           // + Number(localFigmaSquircleOptions().border?.size);
 
-          if (borderOption?.fitBorderSize) {
+          if (borderOption.fitBorderSize) {
             borderCornerRadius =
-              borderCornerRadius - fitBorderSize(borderOption.size, borderOption?.fitBorderSize);
+              borderCornerRadius - fitBorderSize(borderOption.size, borderOption.fitBorderSize);
           }
 
           const pathSvgBorder = createPath({
@@ -159,7 +167,7 @@ const CornerClient: Component<P> = (props) => {
           });
 
           // create style tag to head tag
-          domMethods?.setCssStyle(props.id, [
+          domMethods.setCssStyle(props.id, [
             createListCss.cssCloneContent(),
             createListCss.cssContent(pathSvg, checkEmementSize, borderOption),
             createListCss.cssBorderWrapper(),
@@ -192,15 +200,16 @@ const CornerClient: Component<P> = (props) => {
 
   // Watch for resizing changes in the DOM and do svgpath regeneration
   const watchDomResize = (skipCheck?: boolean): void => {
+    const { reSize, debounce } = props.options;
     // if (props.parent) {
     if (contentElement) {
-      if (props.options?.reSize) {
-        if (props.options?.debounce) {
+      if (reSize) {
+        if (debounce) {
           createResizeObserver(skipCheck, (callback: CreateCorner) => {
             if (timeoutDebounce) clearTimeout(timeoutDebounce);
             timeoutDebounce = setTimeout(() => {
               callback(skipCheck);
-            }, props.options?.debounce);
+            }, debounce);
           });
         } else {
           createResizeObserver(skipCheck);
@@ -221,13 +230,15 @@ const CornerClient: Component<P> = (props) => {
 
     */
 
-    const el = domMethods?.getElement(
-      props.id,
-      props.options?.border ? cloneContentElement.name : content.name
-    ) as HTMLElement;
+    if (domMethods) {
+      const el = domMethods.getElement(
+        props.id,
+        localFigmaSquircleOptions().border ? cloneContentElement.name : content.name
+      ) as HTMLElement;
 
-    if (el) {
-      resizeObserver?.observe(el);
+      if (el) {
+        resizeObserver?.observe(el);
+      }
     }
   };
 
@@ -240,17 +251,19 @@ const CornerClient: Component<P> = (props) => {
 
   // call cleanup when component unmout
   const clean = (): void => {
-    const el = domMethods?.getElement(props.id);
+    if (domMethods) {
+      const el = domMethods.getElement(props.id);
 
-    if (el) el.remove();
-    removeObserver();
+      if (el) el.remove();
+      removeObserver();
+    }
   };
 
   createEffect(
     on(
       localFigmaSquircleOptions,
       () => {
-        if (props.options?.reSize) {
+        if (localFigmaSquircleOptions().reSize) {
           watchDomResize(true);
         } else {
           removeObserver();
@@ -263,7 +276,7 @@ const CornerClient: Component<P> = (props) => {
 
   onMount(() => {
     // Create domMethods with document
-    domMethods = new DomMethods(document);
+    domMethods = new DomMethods(document, props.id);
 
     requestIdleCallback(() => {
       // This is currently only for the purpose of checking if the content exists or not
@@ -273,14 +286,14 @@ const CornerClient: Component<P> = (props) => {
       domMethods.setCssStyle(props.id, [createListCss.cssBorderWrapper()]);
 
       createResizeObserver(true, null, () => {
-        if (props.options?.reSize) {
+        if (localFigmaSquircleOptions().reSize) {
           watchDomResize();
         } else {
           removeObserver();
           watchDomResize();
         }
 
-        if (props.onCallBack) props.onCallBack();
+        // if (props.onCallBack) props.onCallBack();
       });
 
       addObserve();

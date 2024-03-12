@@ -65,13 +65,13 @@ const SolidCornerSmoothing: Component<Props> = (props) => {
       const result: CSS.PropertiesHyphen = { ...(style || {}) };
 
       if (!isClient()) {
-        if (localProps?.clone) {
-          result.position = 'absolute';
-          result.opacity = 0;
-        } else {
-          result['border-radius'] = cornerRadius + 'px';
-          border ? (result.border = border?.size + 'px solid ' + border?.color) : '';
-        }
+        // if (localProps?.clone) {
+        //   result.position = 'absolute';
+        //   result.opacity = 0;
+        // } else {
+        result['border-radius'] = cornerRadius + 'px';
+        border ? (result.border = border?.size + 'px solid ' + border?.color) : '';
+        // }
       }
 
       return result;
@@ -93,9 +93,9 @@ const SolidCornerSmoothing: Component<Props> = (props) => {
           <CornerClient
             options={localProps.options}
             id={id() as string}
-            onCallBack={() => {
-              setIsClient(true);
-            }}
+            // onCallBack={() => {
+            //   setIsClient(true);
+            // }}
           />
         </Show>
       </Dynamic>

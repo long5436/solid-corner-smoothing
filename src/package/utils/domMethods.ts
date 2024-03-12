@@ -5,9 +5,11 @@ const { style } = attrs;
 
 class DomMethods {
   container: Document;
+  id: string;
 
-  constructor(container: Document) {
+  constructor(container: Document, id: string) {
     this.container = container;
+    this.id = id;
   }
 
   getSize(element: HTMLElement, borderWidth?: number): Size {
@@ -80,6 +82,10 @@ class DomMethods {
     const attrName = name || style.name;
     const selector = '[' + attrName + '=' + id.toString() + ']';
     return this.container.querySelector(selector);
+  }
+
+  createSelector(name: string) {
+    return '[' + name + '="' + this.id + '"]';
   }
 }
 
