@@ -26,7 +26,7 @@ const CornerClient: Component<P> = (props) => {
   // const [localFigmaSquircleOptions, setLocalFigmaSquircleOptions] = createSignal<Options>({});
 
   // eslint-disable-next-line prefer-const
-  let resizeObserver: ResizeObserver | null = null;
+  let resizeObserver: ResizeObserver;
   // eslint-disable-next-line prefer-const
   let timeoutDebounce: ReturnType<typeof setTimeout> | null = null;
   // eslint-disable-next-line prefer-const
@@ -178,11 +178,13 @@ const CornerClient: Component<P> = (props) => {
     }
   };
 
-  const createResizeObserver = (
-    skipCheck?: boolean,
-    timeoutCallback?: null | TimeoutCallback,
-    callback?: () => void
-  ): void => {
+  const createResizeObserver = (options: {
+    skipCheck?: boolean;
+    timeoutCallback?: TimeoutCallback | null;
+    callback?: () => void;
+  }): void => {
+    const { skipCheck, timeoutCallback, callback } = options;
+
     // remove old resizeObserver before create new
     removeObserver();
     // create new
@@ -194,31 +196,42 @@ const CornerClient: Component<P> = (props) => {
       } else {
         createCorner(skipCheck);
       }
-      if (callback) callback();
+
+      if (callback) {
+        callback();
+      }
     });
   };
 
   // Watch for resizing changes in the DOM and do svgpath regeneration
   const watchDomResize = (skipCheck?: boolean): void => {
-    const { reSize, debounce } = props.options;
+    const { reSize, debounce } = localFigmaSquircleOptions();
+
+    console.log({ reSize, debounce });
+
     // if (props.parent) {
     if (contentElement) {
       if (reSize) {
         if (debounce) {
-          createResizeObserver(skipCheck, (callback: CreateCorner) => {
-            if (timeoutDebounce) clearTimeout(timeoutDebounce);
-            timeoutDebounce = setTimeout(() => {
-              callback(skipCheck);
-            }, debounce);
+          createResizeObserver({
+            skipCheck,
+            timeoutCallback: (callback: CreateCorner) => {
+              if (timeoutDebounce) clearTimeout(timeoutDebounce);
+              timeoutDebounce = setTimeout(() => {
+                callback(skipCheck);
+              }, debounce);
+            },
           });
+          // createResizeObserver({ skipCheck });
         } else {
-          createResizeObserver(skipCheck);
+          createResizeObserver({ skipCheck });
         }
 
         addObserve();
       } else {
         createCorner(skipCheck);
       }
+      createCorner(skipCheck);
     }
   };
 
@@ -236,8 +249,8 @@ const CornerClient: Component<P> = (props) => {
         localFigmaSquircleOptions().border ? cloneContentElement.name : content.name
       ) as HTMLElement;
 
-      if (el) {
-        resizeObserver?.observe(el);
+      if (el && resizeObserver) {
+        resizeObserver.observe(el);
       }
     }
   };
@@ -285,15 +298,20 @@ const CornerClient: Component<P> = (props) => {
       // Create style tag to head tag
       domMethods.setCssStyle(props.id, [createListCss.cssBorderWrapper()]);
 
-      createResizeObserver(true, null, () => {
-        if (localFigmaSquircleOptions().reSize) {
-          watchDomResize();
-        } else {
-          removeObserver();
-          watchDomResize();
-        }
+      createResizeObserver({
+        skipCheck: true,
+        timeoutCallback: null,
+        // callback: () => {
+        //   if (localFigmaSquircleOptions().reSize) {
+        //     watchDomResize();
+        //   }
+        //   //   } else {
+        //   //     watchDomResize();
+        //   //     removeObserver();
+        //   //   }
 
-        // if (props.onCallBack) props.onCallBack();
+        //   //   // if (props.onCallBack) props.onCallBack();
+        // },
       });
 
       addObserve();

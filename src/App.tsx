@@ -24,20 +24,22 @@ const App: Component = () => {
       </SolidCornerSmoothing>
       <SolidCornerSmoothing
         style={{
-          background: 'tan',
-          width: '200px',
-          height: '200px',
+          background: 'pink',
+          width: '100%',
+          height: '300px',
         }}
         options={{
-          cornerRadius: radius(),
           cornerSmoothing: 0.8,
-          border: {
-            size: 10,
-            color: 'skyblue',
-          },
+          cornerRadius: radius(),
+          reSize: true,
+          debounce: 800,
+          // border: {
+          //   size: 2,
+          //   color: 'blue'
+          // }
         }}
       >
-        <h1>Hello</h1>
+        dasdsa
       </SolidCornerSmoothing>
       <input
         type="number"
