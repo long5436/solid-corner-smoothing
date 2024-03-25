@@ -27,10 +27,10 @@
     "solid-squircle",
     "solid-start"
   ],
-  "homepage": "https://github.com/longluuly/solid-corner-smoothing#readme",
+  "homepage": "https://github.com/long5436/solid-corner-smoothing#readme",
   "repository": {
     "type": "git",
-    "url": "https://github.com/longluuly/solid-corner-smoothing"
+    "url": "https://github.com/long5436/solid-corner-smoothing"
   },
   "publishConfig": {
     "access": "public"

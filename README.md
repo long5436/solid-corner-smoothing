@@ -4,7 +4,7 @@ This is a component package used to create smooth curved corners for solidJS. Yo
 
 From version 0.2.0 will support solid-start and the documentation has been changed
 
-# [:point_right: Link demo](https://longluuly.github.io/solid-corner-smoothing/)
+# [:point_right: Link demo](https://long5436.github.io/solid-corner-smoothing/)
 
 ![demo image](./preview//img1.png)
 ![demo image](./preview//img2.png)
