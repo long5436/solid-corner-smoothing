@@ -47,7 +47,7 @@ export type OtherOption = {
   width?: number;
   height?: number;
   reSize?: boolean;
-  debounce?: number;
+  // debounce?: number;
   backgroundColor?: string;
   border?: BorderOption;
 };

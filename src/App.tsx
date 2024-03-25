@@ -22,8 +22,10 @@ const App: Component = () => {
       >
         <h1>Hello</h1>
       </SolidCornerSmoothing>
+
       <SolidCornerSmoothing
         style={{
+          'margin-top': '10px',
           background: 'pink',
           width: '100%',
           height: '300px',
@@ -32,7 +34,6 @@ const App: Component = () => {
           cornerSmoothing: 0.8,
           cornerRadius: radius(),
           reSize: true,
-          debounce: 800,
           // border: {
           //   size: 2,
           //   color: 'blue'

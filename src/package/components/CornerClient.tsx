@@ -7,7 +7,6 @@ import {
   Props,
   PropsLocal,
   Size,
-  TimeoutCallback,
 } from '../type';
 import { attrs } from '../utils/domAttr';
 // import { container, createCss, getElement, getSize, setCssStyle } from '../utils/domMethods';
@@ -28,7 +27,7 @@ const CornerClient: Component<P> = (props) => {
   // eslint-disable-next-line prefer-const
   let resizeObserver: ResizeObserver;
   // eslint-disable-next-line prefer-const
-  let timeoutDebounce: ReturnType<typeof setTimeout> | null = null;
+  // let timeoutDebounce: ReturnType<typeof setTimeout> | null = null;
   // eslint-disable-next-line prefer-const
   let oldSizeElment: Size = { width: 0, height: 0 };
   // eslint-disable-next-line prefer-const
@@ -178,54 +177,15 @@ const CornerClient: Component<P> = (props) => {
     }
   };
 
-  const createResizeObserver = (options: {
-    skipCheck?: boolean;
-    timeoutCallback?: TimeoutCallback | null;
-    callback?: () => void;
-  }): void => {
-    const { skipCheck, timeoutCallback, callback } = options;
-
-    // remove old resizeObserver before create new
-    removeObserver();
-    // create new
-
-    resizeObserver = new ResizeObserver(() => {
-      // createCorner(skipCheck);
-      if (timeoutCallback) {
-        timeoutCallback(createCorner);
-      } else {
-        createCorner(skipCheck);
-      }
-
-      if (callback) {
-        callback();
-      }
-    });
-  };
-
   // Watch for resizing changes in the DOM and do svgpath regeneration
   const watchDomResize = (skipCheck?: boolean): void => {
-    const { reSize, debounce } = localFigmaSquircleOptions();
+    removeObserver();
 
-    console.log({ reSize, debounce });
-
-    // if (props.parent) {
     if (contentElement) {
-      if (reSize) {
-        if (debounce) {
-          createResizeObserver({
-            skipCheck,
-            timeoutCallback: (callback: CreateCorner) => {
-              if (timeoutDebounce) clearTimeout(timeoutDebounce);
-              timeoutDebounce = setTimeout(() => {
-                callback(skipCheck);
-              }, debounce);
-            },
-          });
-          // createResizeObserver({ skipCheck });
-        } else {
-          createResizeObserver({ skipCheck });
-        }
+      if (localFigmaSquircleOptions().reSize) {
+        resizeObserver = new ResizeObserver(() => {
+          createCorner(skipCheck);
+        });
 
         addObserve();
       } else {
@@ -298,23 +258,8 @@ const CornerClient: Component<P> = (props) => {
       // Create style tag to head tag
       domMethods.setCssStyle(props.id, [createListCss.cssBorderWrapper()]);
 
-      createResizeObserver({
-        skipCheck: true,
-        timeoutCallback: null,
-        // callback: () => {
-        //   if (localFigmaSquircleOptions().reSize) {
-        //     watchDomResize();
-        //   }
-        //   //   } else {
-        //   //     watchDomResize();
-        //   //     removeObserver();
-        //   //   }
-
-        //   //   // if (props.onCallBack) props.onCallBack();
-        // },
-      });
-
       addObserve();
+      watchDomResize();
     });
   });
 

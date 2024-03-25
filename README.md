@@ -40,7 +40,6 @@ const App = () => {
           cornerRadius: 40,
           cornerSmoothing: 0.8,
           reSize: true,
-          debounce: 100,
           preserveSmoothing: true,
         }}
       >
@@ -72,7 +71,6 @@ return (
         cornerSmoothing: smoothing(),
         preserveSmoothing: true
         reSize: true
-        debounce: 100
       }}
     >
       This is box
@@ -190,9 +188,8 @@ return (
 | bottomLeftCornerRadius  | number     | Radius each corner                                                                                                                                               |
 | cornerSmoothing         | number     | The degree of corner smoothing as a number in the range 0–1. 0 is equivalent to no smoothing and looks like normal border-radius. 1 indicates maximal smoothing. |
 | preserveSmoothing       | boolean    | Allow corner smoothing to work better on large rounded corners.                                                                                                  |
-| reSize                  | boolean    | Allows resizing and corners, (disabled by default to improve performance, can be used with the `deboune` prop)                                                   |
+| reSize                  | boolean    | Allows resizing and corners                                                                                                                                      |
 | border.size             | number     | When this prop has a value, it will turn into border mode (need to change the css according to the instructions or use prop `borderColor` and `backgroundColor`) |
 | border.color            | string     | Border color                                                                                                                                                     |
 | backgroundColor         | string     | Background color (can still use css if not using this prop)                                                                                                      |
-| debounce                | number     | (improved performance) delay the re-rendering of corners when doing a resize, radius and smoothing. (This prop only works when it comes with the `reSize` prop)  |
 | fitBorderWidth          | number     | Add custom angle width parameter to fix visual effects                                                                                                           |

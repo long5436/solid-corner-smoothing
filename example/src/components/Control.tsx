@@ -12,8 +12,8 @@ const Control: Component<Props> = (props) => {
   const [radius, setRadius] = createSignal<number>(40);
   const [cornerSmoothing, setCornerSmoothing] = createSignal<number>(0.8);
   const [reSize, setResize] = createSignal<boolean>(true);
-  const [debounce, setDebounce] = createSignal<boolean>(false);
-  const [debounceTime, setDebounceTime] = createSignal<number>(100);
+  // const [debounce, setDebounce] = createSignal<boolean>(false);
+  // const [debounceTime, setDebounceTime] = createSignal<number>(100);
 
   const [options, setOptions] = createSignal<Options>({
     cornerSmoothing: 0,
@@ -31,9 +31,9 @@ const Control: Component<Props> = (props) => {
       // },
     };
 
-    if (debounce()) {
-      op.debounce = debounceTime();
-    }
+    // if (debounce()) {
+    //   op.debounce = debounceTime();
+    // }
 
     if (border()) {
       op.border = {
@@ -48,7 +48,7 @@ const Control: Component<Props> = (props) => {
 
     setOptions(op);
 
-    if (!!props.callback) {
+    if (props.callback) {
       props.callback(options());
     }
   });
@@ -146,7 +146,7 @@ const Control: Component<Props> = (props) => {
             </td>
           </tr>
 
-          <tr>
+          {/* <tr>
             <td>Debounce:</td>
             <td>
               <label>
@@ -158,9 +158,9 @@ const Control: Component<Props> = (props) => {
                 <span></span>
               </label>
             </td>
-          </tr>
+          </tr> */}
 
-          <tr>
+          {/* <tr>
             <td classList={{ diabled: !debounce() }}>
               Debounce Timeout (0-1000):{' '}
               <span class="current-value">({debounceTime()}ms)</span>
@@ -176,7 +176,7 @@ const Control: Component<Props> = (props) => {
                 onInput={(e) => setDebounceTime(Number(e.target.value))}
               />
             </td>
-          </tr>
+          </tr> */}
         </tbody>
       </table>
       <p>
