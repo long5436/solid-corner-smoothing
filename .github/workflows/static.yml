@@ -63,8 +63,8 @@ jobs:
       - run: npm i
       - run: npm run build
       - run: |
-          cp ./dist ./dist/dist
-          cp ./package.json ./dist/package.json
+          cp ./dist ./dist/dist -r
+          cp ./package.json ./dist/package.json -r
       - uses: actions/upload-artifact@v3
         with:
           name: lib
